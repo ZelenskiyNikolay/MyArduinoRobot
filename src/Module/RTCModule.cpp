@@ -1,4 +1,6 @@
 #include "RTCModule.h"
+#include <Wire.h>
+#include <RTClib.h>
 
 RTCModule::RTCModule() : lastUpdate(0), updateInterval(1000) {}
 
@@ -8,7 +10,15 @@ RTCModule& RTCModule::getInstance() {
 }
 
 void RTCModule::begin() {
-    rtc.begin();
+    if (!rtc.begin()) {
+        Serial.println("RTC не найден!");
+        return;
+    }
+
+    if (rtc.lostPower()) {
+        Serial.println("RTC остановлен, устанавливаю текущее время...");
+        rtc.adjust(DateTime(F(__DATE__), F(__TIME__)));
+    }
     currentTime = rtc.now();
 }
 
