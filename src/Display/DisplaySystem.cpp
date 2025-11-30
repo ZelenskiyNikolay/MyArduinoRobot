@@ -39,6 +39,22 @@ void DisplaySystem::fillRect(int16_t x, int16_t y, int16_t w, int16_t h, uint16_
     display->fillRect(x, y, w, h, color);
     NeedUpdate = true;
 }
+void DisplaySystem::setTextSize(uint8_t size)
+{
+    display->setTextSize(size);
+}
+void DisplaySystem::setTextColor(uint16_t color)
+{
+    display->setTextColor(color);
+}
+void DisplaySystem::setCursor(int16_t x, int16_t y)
+{
+    display->setTextColor(x,y);
+}
+void DisplaySystem::println(char str)
+{
+    display->println(str);
+}
 void DisplaySystem::update()
 {
     if (NeedUpdate)

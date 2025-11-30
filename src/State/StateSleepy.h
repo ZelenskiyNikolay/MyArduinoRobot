@@ -4,7 +4,7 @@
 #include "Display/Sprite.h"
 #include "Sound/SoundManager.h"
 #include "StateCommand.h"
-
+#include <RTClib.h>
 
 class StateSleepy : public State {
 public:
@@ -22,7 +22,7 @@ private:
     bool IsOpen;
     float timer;
 
-    
+    DateTime _time;
     DisplaySystem* display;
     Sprite sprite;
     Sound sound;

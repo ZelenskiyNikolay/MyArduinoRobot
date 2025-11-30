@@ -1,16 +1,17 @@
 #include "StateNormal.h"
 #include "Display/Sprite.h"
+#include "Module/RTCModule.h"
 
-
-StateNormal::StateNormal(DisplaySystem& disp)
-    : display(&disp),sprite(&disp),sound(12)
-{}
+StateNormal::StateNormal(DisplaySystem &disp)
+    : display(&disp), sprite(&disp), sound(12)
+{
+}
 
 void StateNormal::enter()
 {
-  //display->clear();
-  //display->drawText("Normal", 0, 0);
-  timer=0;
+  // display->clear();
+  // display->drawText("Normal", 0, 0);
+  timer = 0;
 }
 void StateNormal::update(float dt)
 {
@@ -23,9 +24,15 @@ StateCommand StateNormal::handleEvent(Event e)
   if (e.type == EVENT_MOTION)
   {
     display->clear();
-    display->drawText("Motion!", 0, 0);
-    //return CMD_TO_SLEEPY;
+    _time = RTCModule::getInstance().getTime();
+
+    if (_time.hour() > 22 || _time.hour() < 6)
+    {
+      return CMD_TO_SLEEPY;
+    }
   }
+
+  sound.RtDt(15);
   return CMD_NONE;
 }
 
@@ -38,7 +45,6 @@ void StateNormal::Draw(float dt)
     {
       IsOpen = false;
       timer = Close_Eyes;
-      sound.RtDt(15);
       sprite.Draw(Emotions::NORMAL);
       return;
     }
@@ -49,7 +55,6 @@ void StateNormal::Draw(float dt)
     {
       IsOpen = true;
       timer = Open_Eyes;
-      sound.RtDt(5);
       sprite.Draw(Emotions::SLEEPY);
       return;
     }

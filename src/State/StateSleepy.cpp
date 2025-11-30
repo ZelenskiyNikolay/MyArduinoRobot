@@ -1,10 +1,11 @@
 #include "StateSleepy.h"
 #include "Display/Sprite.h"
+#include "Module/RTCModule.h"
 
-
-StateSleepy::StateSleepy(DisplaySystem& disp)
-    : display(&disp),sprite(&disp),sound(12)
-{}
+StateSleepy::StateSleepy(DisplaySystem &disp)
+    : display(&disp), sprite(&disp), sound(12)
+{
+}
 
 void StateSleepy::enter()
 {
@@ -24,9 +25,13 @@ StateCommand StateSleepy::handleEvent(Event e)
   if (e.type == EVENT_MOTION)
   {
     sprite.Draw(Emotions::ANGRY);
-    sound.RtDt(5);
-    return CMD_TO_NORMAL;
+
+    if (_time.hour() < 22 && _time.hour() > 6)
+    {
+      return CMD_TO_NORMAL;
+    }
   }
+  sound.RtDt(2);
   return CMD_NONE;
 }
 
@@ -39,7 +44,12 @@ void StateSleepy::Draw(float dt)
     {
       IsOpen = false;
       timer = Close_Eyes;
+
+      _time = RTCModule::getInstance().getTime();
       sprite.Draw(Emotions::BLINK);
+      char buffer[6]; // "HH:MM"
+      sprintf(buffer, "%02d:%02d", _time.hour(), _time.minute());
+      display->drawText(buffer, 0, 0, 2);
       return;
     }
   }
