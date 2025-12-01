@@ -1,15 +1,22 @@
 Pet Robot
+
 This project is a small pet robot.
 
 Features:
-Reacts to motion and changes states based on the time of day.
-Produces R2D2-style sounds.
-Changes facial expressions on the screen depending on its current state.
+
+-Reacts to motion and changes states based on the time of day.
+
+-Produces R2D2-style sounds.
+
+-Changes facial expressions on the screen depending on its current state.
 
 In development:
-Movement on a table, dancing, and other animations.
-Autonomous charging: parking on the charger in the evening or when the battery is low.
-PC communication via radio link for extended functionality.
+
+-Movement on a table, dancing, and other animations.
+
+-Autonomous charging: parking on the charger in the evening or when the battery is low.
+
+-PC communication via radio link for extended functionality.
 
 Modules used:
 Arduino Mega 2560
