@@ -15,6 +15,7 @@ public:
     void setTextSize(uint8_t size);
     void setCursor(int16_t x, int16_t y);
     void println(char str);
+    void setContrast(uint8_t value);
     
     void clear();
     void update();

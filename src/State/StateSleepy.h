@@ -2,6 +2,7 @@
 #include "State.h"
 #include "Display/DisplaySystem.h"
 #include "Display/Sprite.h"
+#include "Display/SpriteOled.h"
 #include "Sound/SoundManager.h"
 #include "StateCommand.h"
 #include <RTClib.h>
@@ -26,7 +27,8 @@ private:
     DateTime _time;
     DisplayOled *display;
     DisplaySystem *displayOld;
-    Sprite sprite;
+    Sprite spriteOld;
+    SpriteOled sprite;
     Sound sound;
     float blinkTimer = 3000;
 };

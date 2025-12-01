@@ -3,7 +3,7 @@
 #include "Module/RTCModule.h"
 
 StateSleepy::StateSleepy(DisplaySystem &disp)
-    : displayOld(&disp), sprite(&disp), sound(12)
+    : displayOld(&disp), spriteOld(&disp), sound(12)
 {
 }
 StateSleepy::StateSleepy(DisplayOled &disp)
@@ -14,6 +14,7 @@ StateSleepy::StateSleepy(DisplayOled &disp)
 void StateSleepy::enter()
 {
   display->clear();
+  //display->setContrast();
   sprite.Draw(Emotions::SLEEPY);
 }
 

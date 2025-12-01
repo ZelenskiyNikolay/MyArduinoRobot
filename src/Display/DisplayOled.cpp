@@ -56,6 +56,10 @@ void DisplayOled::println(char str)
 {
     display->println(str);
 }
+void DisplayOled::setContrast(uint8_t value)
+{
+   // display->setCo
+}
 void DisplayOled::update()
 {
     if (NeedUpdate)

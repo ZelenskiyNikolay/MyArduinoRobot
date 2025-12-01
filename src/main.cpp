@@ -58,10 +58,6 @@ void setup()
 
   //display.setContrast(60);
   display.clearDisplay();
-  display.setTextColor(SSD1306_WHITE);
-  display.print("TEST");
-  display.display();
-  delay(5000);
 
   lastTime = millis();
 
@@ -69,7 +65,7 @@ void setup()
 
   RTCModule::getInstance().begin();
   
-  fsm =new FSM(new StateNormal(displaySys), &displaySys);
+  fsm =new FSM(new StateSleepy(displaySys), &displaySys);
 }
 
 void loop()

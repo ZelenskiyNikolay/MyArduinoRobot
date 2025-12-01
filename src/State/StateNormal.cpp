@@ -15,7 +15,6 @@ void StateNormal::enter()
 {
   
   display->clear();
-  display->drawText("TEST",0,0,2);
   // display->drawText("Normal", 0, 0);
   
   timer = 5000;
