@@ -2,16 +2,23 @@
 #include "Display/Sprite.h"
 #include "Module/RTCModule.h"
 
-StateNormal::StateNormal(DisplaySystem &disp)
+StateNormal::StateNormal(DisplayOled &disp)
     : display(&disp), sprite(&disp), sound(12)
+{
+}
+StateNormal::StateNormal(DisplaySystem &dispOld)
+    : displayOld(&dispOld), spriteOld(&dispOld), sound(12)
 {
 }
 
 void StateNormal::enter()
 {
-  // display->clear();
+  
+  display->clear();
+  display->drawText("TEST",0,0,2);
   // display->drawText("Normal", 0, 0);
-  timer = 0;
+  
+  timer = 5000;
 }
 void StateNormal::update(float dt)
 {

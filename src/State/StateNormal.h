@@ -1,14 +1,17 @@
 #pragma once
 #include "State.h"
 #include "Display/DisplaySystem.h"
+#include "Display/DisplayOled.h"
 #include "Display/Sprite.h"
+#include "Display/SpriteOled.h"
 #include "Sound/SoundManager.h"
 #include "StateCommand.h"
 #include <RTClib.h>
 
 class StateNormal : public State {
 public:
-    StateNormal(DisplaySystem& disp);
+    StateNormal(DisplaySystem& dispOld);
+    StateNormal(DisplayOled& disp);
     
     void enter() override;
     void update(float dt) override;
@@ -24,8 +27,10 @@ private:
 
     DateTime _time;
     
-    DisplaySystem* display;
-    Sprite sprite;
+    DisplayOled* display;
+    DisplaySystem* displayOld;
+    Sprite spriteOld;
+    SpriteOled sprite;
     Sound sound;
     float blinkTimer = 3000;
 };

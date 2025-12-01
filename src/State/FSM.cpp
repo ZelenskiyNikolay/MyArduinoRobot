@@ -3,10 +3,22 @@
 #include "StateSleepy.h"
 #include "StateCommand.h"
 
-FSM::FSM(State *initial, DisplaySystem *disp)
+FSM::FSM(State *initial, DisplaySystem *dispOld)
+    : current(initial), displayOld(dispOld)
+{
+    current->enter();
+}
+FSM::FSM(State *initial, DisplayOled *disp)
     : current(initial), display(disp)
 {
     current->enter();
+}
+
+
+void FSM::Init(State *initial, DisplayOled *disp)
+{
+    current = initial;
+    display = disp;
 }
 
 void FSM::update(float dt)

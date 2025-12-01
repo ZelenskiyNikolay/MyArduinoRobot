@@ -1,33 +1,32 @@
 #pragma once
 #include "Display/DisplaySystem.h"
 #include "Display/DisplayOled.h"
+#include "Sprite.h"
 
-enum Emotions
-{
-    NORMAL,
-    SLEEPY,
-    ANGRY,
-    SURPRISED,
-    HAPPY,
-    SAD,
-    LEFT_LOOK,
-    RIGHT_LOOK,
-    BLINK,
-    SHOW_TIME,
-    SOOS,
-    EYE_STATE_COUNT
-};
+// enum Emotions
+// {
+//     NORMAL,
+//     SLEEPY,
+//     ANGRY,
+//     SURPRISED,
+//     HAPPY,
+//     SAD,
+//     LEFT_LOOK,
+//     RIGHT_LOOK,
+//     BLINK,
+//     SHOW_TIME,
+//     SOOS,
+//     EYE_STATE_COUNT
+// };
 
-class Sprite
+class SpriteOled
 {
 public:
-    Sprite() {}
-    Sprite(DisplaySystem *disp) : displayOld(disp) {}
-    Sprite(DisplayOled *disp) : display(disp) {}
+    SpriteOled() {}
+    SpriteOled(DisplayOled *disp) : display(disp) {}
     void Draw(Emotions emotions);
 
 private:
-    DisplaySystem *displayOld;
     DisplayOled *display;
     void drawEyes_Normal();
     void drawEyes_Sleepy();

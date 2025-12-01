@@ -6,24 +6,26 @@
 #include "StateCommand.h"
 #include <RTClib.h>
 
-class StateSleepy : public State {
+class StateSleepy : public State
+{
 public:
-    StateSleepy(DisplaySystem& disp);
-    
+    StateSleepy(DisplaySystem &disp);
+    StateSleepy(DisplayOled &disp);
+
     void enter() override;
     void update(float dt) override;
     StateCommand handleEvent(Event e) override;
     void Draw(float dt);
 
 private:
-
     const float Open_Eyes = 1000;
     const float Close_Eyes = 10000;
     bool IsOpen;
     float timer;
 
     DateTime _time;
-    DisplaySystem* display;
+    DisplayOled *display;
+    DisplaySystem *displayOld;
     Sprite sprite;
     Sound sound;
     float blinkTimer = 3000;
