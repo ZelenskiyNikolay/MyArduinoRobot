@@ -51,9 +51,10 @@ void DisplaySystem::setCursor(int16_t x, int16_t y)
 {
     display->setTextColor(x,y);
 }
-void DisplaySystem::println(char str)
+void DisplaySystem::println(const char *text)
 {
-    display->println(str);
+    display->println(text);
+    NeedUpdate = true;
 }
 void DisplaySystem::update()
 {

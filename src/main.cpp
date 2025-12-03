@@ -4,15 +4,16 @@
 #include "State/StateSleepy.h"
 #include "Display/DisplaySystem.h"
 #include "Sensors/MotionSensor.h"
+#include "Sensors/TouchButtons.h"
 #include "State/FSM.h"
 #include "Display/DisplayOled.h"
+#include <SD.h>
 
 #include <Adafruit_GFX.h>
-//#include <Adafruit_PCD8544.h>
+// #include <Adafruit_PCD8544.h>
 #include <Adafruit_SSD1306.h>
 
 #include "Module/RTCModule.h"
-
 
 #define SCREEN_WIDTH 128
 #define SCREEN_HEIGHT 64
@@ -28,9 +29,9 @@ Adafruit_SSD1306 display(SCREEN_WIDTH, SCREEN_HEIGHT,
                          &SPI, OLED_DC, OLED_RESET, OLED_CS);
 DisplayOled displaySys(display);
 
-FSM* fsm = nullptr;
+FSM *fsm = nullptr;
 
-MotionSensor pir(30); //Pir sensor
+MotionSensor pir(30); // Pir sensor
 
 void FpsCount(float dt);
 
@@ -48,15 +49,16 @@ float getDeltaTime()
 
 void setup()
 {
-  //display.begin();
-  if (!display.begin(SSD1306_SWITCHCAPVCC)) {
+  // display.begin();
+  if (!display.begin(SSD1306_SWITCHCAPVCC))
+  {
     Serial.begin(9600);
     Serial.println(F("SSD1306 allocation failed"));
     for (;;)
       ;
   }
 
-  //display.setContrast(60);
+  // display.setContrast(60);
   display.clearDisplay();
 
   lastTime = millis();
@@ -64,17 +66,21 @@ void setup()
   Serial.begin(9600);
 
   RTCModule::getInstance().begin();
-  
-  fsm =new FSM(new StateSleepy(displaySys), &displaySys);
+  TouchButtons::getInstance().begin();
+
+  fsm = new FSM(new StateNormal(displaySys), &displaySys);
 }
 
 void loop()
 {
-  
+
   float dt = getDeltaTime();
 
   pir.update();
   RTCModule::getInstance().update();
+
+  TouchButtons::getInstance().update();
+
   // 1. собираем события (пока пусто, позже добавим датчики)
   while (EventBus::hasEvents())
   {
@@ -86,7 +92,6 @@ void loop()
 
   // 3. отрисовка
   displaySys.update();
-  
   FpsCount(dt);
 }
 
@@ -94,11 +99,11 @@ void FpsCount(float dt)
 {
   callsPerSecond++;
   currentMillis += dt;
-  if (currentMillis >= 1000) 
+  if (currentMillis >= 1000)
   {
     Serial.print("Вызовов в секунду: ");
     Serial.println(callsPerSecond);
     callsPerSecond = 0;
     currentMillis = 0;
-  }    
+  }
 }

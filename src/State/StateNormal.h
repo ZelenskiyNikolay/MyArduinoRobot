@@ -27,6 +27,10 @@ private:
 
     DateTime _time;
     
+    void DrawClock(float dt);
+    bool IsDrawClock = false;
+    const float ApdateTimeConst = 1000;
+    
     DisplayOled* display;
     DisplaySystem* displayOld;
     Sprite spriteOld;

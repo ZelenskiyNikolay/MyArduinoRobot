@@ -14,7 +14,7 @@ public:
     void setTextColor(uint16_t color);
     void setTextSize(uint8_t size);
     void setCursor(int16_t x, int16_t y);
-    void println(char str);
+    void println(const char *text);
     
     void clear();
     void update();

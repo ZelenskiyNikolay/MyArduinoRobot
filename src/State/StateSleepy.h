@@ -24,6 +24,10 @@ private:
     bool IsOpen;
     float timer;
 
+    void DrawClock(float dt);
+    bool IsDrawClock = false;
+    const float ApdateTimeConst = 1000;
+    
     DateTime _time;
     DisplayOled *display;
     DisplaySystem *displayOld;

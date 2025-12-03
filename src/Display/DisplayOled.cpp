@@ -16,7 +16,7 @@ void DisplayOled::drawText(const char *text, int x, int y, int size)
     display->setTextColor(SSD1306_WHITE);
     display->setTextSize(size);
     display->setCursor(x, y);
-    display->println(text);
+    display->print(text);
     NeedUpdate = true;
 }
 
