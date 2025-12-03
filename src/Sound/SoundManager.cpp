@@ -8,6 +8,11 @@ Sound::Sound(int piezoPin)
     pinMode(pin, OUTPUT);
 }
 
+uint8_t  Sound::GetVolume(){return _volume;}
+void Sound::SetVolume(uint8_t volume)
+{
+    _volume = volume;
+}
 void Sound::Update(float dt)
 {
     if (longSound > 0)
@@ -17,7 +22,7 @@ void Sound::Update(float dt)
         {
             if (toneAC_isPlaying_flag)
             {
-                toneAC(random(600, 1600), 10, random(20, 80), true);
+                toneAC(random(600, 1600), _volume, random(20, 80), true);
                 timer = random(10, 80);
                 longSound--;
             }
@@ -36,5 +41,5 @@ void Sound::RtDt(int Long)
 
     timer = random(10, 80);
 
-    toneAC(random(600, 1600), 10, random(20, 80), true);
+    toneAC(random(600, 1600), _volume, random(20, 80), true);
 }

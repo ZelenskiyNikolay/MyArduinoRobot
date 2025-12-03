@@ -7,10 +7,11 @@ private:
     int pin;
     float timer;
     int longSound;
-
+    uint8_t _volume=10;
 public:
     Sound(int piezoPin);
-
+    void SetVolume(uint8_t volume);
+    uint8_t  GetVolume();
     void Update(float dt);
     // базовые звуки
 	void RtDt(int Long);

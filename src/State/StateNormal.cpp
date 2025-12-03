@@ -16,12 +16,29 @@ void StateNormal::enter()
 {
 
   display->clear();
-  // display->drawText("Normal", 0, 0);
 
-  timer = 5000;
+  timer = 0;
 }
 void StateNormal::update(float dt)
 {
+  if(TouchButtons::getInstance().consume(2))
+  {
+    IsDrawVolume = true;
+    timer = ApdateTimeConst;
+    _volume = sound.GetVolume();
+    if(_volume<10)
+    _volume++;
+    sound.SetVolume(_volume);
+  }
+  if(TouchButtons::getInstance().consume(1))
+  {
+    IsDrawVolume = true;
+    timer = ApdateTimeConst;
+    _volume = sound.GetVolume();
+    if(_volume>0)
+    _volume--;
+    sound.SetVolume(_volume);
+  }
   if (TouchButtons::getInstance().consume(0))
   {
     IsDrawClock = !IsDrawClock;
@@ -32,6 +49,9 @@ void StateNormal::update(float dt)
     Draw(dt);
   else
     DrawClock(dt);
+  if(IsDrawVolume)
+    DrawVolumeCount(dt);
+
   sound.Update(dt);
 }
 
@@ -51,7 +71,16 @@ StateCommand StateNormal::handleEvent(Event e)
     sound.RtDt(15);
   return CMD_NONE;
 }
-
+void StateNormal::DrawVolumeCount(float dt)
+{
+    char buffer[7]; // "HH:MM"
+    
+    sprintf(buffer, "Vol:%02d", _volume);
+    display->drawText(buffer, 0, 0, 2);
+    timer -= dt;
+    if(timer<0)
+      IsDrawVolume = false;
+}
 void StateNormal::DrawClock(float dt)
 {
   timer -= dt;

@@ -31,6 +31,10 @@ private:
     bool IsDrawClock = false;
     const float ApdateTimeConst = 1000;
     
+    void DrawVolumeCount(float dt);
+    bool IsDrawVolume = false;
+    uint8_t _volume;
+    
     DisplayOled* display;
     DisplaySystem* displayOld;
     Sprite spriteOld;
