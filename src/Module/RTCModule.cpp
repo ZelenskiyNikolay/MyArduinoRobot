@@ -23,20 +23,9 @@ void RTCModule::begin()
         Serial.println("RTC остановлен, устанавливаю текущее время...");
         rtc.adjust(DateTime(F(__DATE__), F(__TIME__)));
     }
-    else
-    {
-        // Можно проверить, насколько RTC отличается от компиляционного времени
-        DateTime now = rtc.now();
-        DateTime compileTime(F(__DATE__), F(__TIME__));
+    //Установка часов
+    //rtc.adjust(DateTime(F(__DATE__), F(__TIME__)));
 
-        long diff = compileTime.unixtime() - now.unixtime();
-        if (abs(diff) > 60)
-        { // разница более 1 минуты
-            Serial.print("Корректирую RTC, разница: ");
-            Serial.println(diff);
-            rtc.adjust(compileTime);
-        }
-    }
     currentTime = rtc.now();
 }
 
