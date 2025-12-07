@@ -41,5 +41,4 @@ timer -= dt;
     sprintf(buffer, "%02d:%02d", _time.hour(), _time.minute());
     display->drawText(buffer, 5, 20, 4);
   }
-  EventBus::push({EVENT_MOTION});
 }

@@ -16,11 +16,10 @@ public:
     
     void enter() override;
     void update(float dt) override;
-    //StateCommand handleEvent(Event e) override;
     void Draw(float dt);
 
 private:
-    const float ApdateTimeConst = 1000;
+    const float ApdateTimeConst = 30000;
     float timer;
 
     DateTime _time;
