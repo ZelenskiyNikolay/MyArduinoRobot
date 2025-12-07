@@ -2,6 +2,7 @@
 #include "StateNormal.h"
 #include "StateSleepy.h"
 #include "StateCommand.h"
+#include "StateClock.h"
 
 FSM::FSM(State *initial, DisplaySystem *dispOld)
     : current(initial), displayOld(dispOld)
@@ -31,6 +32,15 @@ void FSM::handleEvent(Event e)
 {
     StateCommand cmd = current->handleEvent(e);
 
+    switch(e.type)
+    {
+        case EVENT_CHANGE_STATE:
+            changeStateById((StateID)e.data);
+            break;
+
+        // другие события…
+    }
+
     switch (cmd)
     {
     case CMD_TO_NORMAL:
@@ -51,4 +61,23 @@ void FSM::changeState(State *next)
     delete current;
     current = next;
     current->enter();
+}
+
+void FSM::changeStateById(StateID id)
+{
+    switch(id) {
+        case STATE_NORMAL:
+            changeState(new StateNormal(*display));
+            break;
+
+        case STATE_SLEEPY:
+            changeState(new StateSleepy(*display));
+            break;
+
+        case STATE_CLOCK:
+            changeState(new StateClock(*display));
+            break;
+
+        // …и так далее
+    }
 }

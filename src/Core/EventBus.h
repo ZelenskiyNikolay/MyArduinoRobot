@@ -6,7 +6,8 @@ enum EventType {
   EVENT_MOTION,
   EVENT_NOISE,
   EVENT_REMOTE,
-  EVENT_TIME_TICK
+  EVENT_TIME_TICK,
+  EVENT_CHANGE_STATE,
 };
 
 struct Event {

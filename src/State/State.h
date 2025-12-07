@@ -2,6 +2,12 @@
 #include "../Core/EventBus.h"
 #include "StateCommand.h"
 
+enum StateID {
+    STATE_NORMAL = 0,
+    STATE_SLEEPY = 1,
+    STATE_CLOCK  = 2
+};
+
 class State {
 public:
     virtual ~State() {} 

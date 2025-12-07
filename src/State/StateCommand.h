@@ -5,6 +5,6 @@ enum StateCommand {
     CMD_TO_NORMAL,
     CMD_TO_SLEEPY,
     CMD_TO_ANGRY,
-    CMD_TO_HAPPY,
+    CMD_TO_HAPPY
     // добавляй свои позже
 };

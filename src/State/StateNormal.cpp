@@ -21,35 +21,32 @@ void StateNormal::enter()
 }
 void StateNormal::update(float dt)
 {
-  if(TouchButtons::getInstance().consume(2))
+  if (TouchButtons::getInstance().consume(2))
   {
     IsDrawVolume = true;
     timer = ApdateTimeConst;
     _volume = sound.GetVolume();
-    if(_volume<10)
-    _volume++;
+    if (_volume < 10)
+      _volume++;
     sound.SetVolume(_volume);
   }
-  if(TouchButtons::getInstance().consume(1))
+  if (TouchButtons::getInstance().consume(1))
   {
     IsDrawVolume = true;
     timer = ApdateTimeConst;
     _volume = sound.GetVolume();
-    if(_volume>0)
-    _volume--;
+    if (_volume > 0)
+      _volume--;
     sound.SetVolume(_volume);
   }
   if (TouchButtons::getInstance().consume(0))
   {
-    IsDrawClock = !IsDrawClock;
-    timer = 0;
+    EventBus::push({EVENT_CHANGE_STATE, STATE_CLOCK});
   }
 
-  if (!IsDrawClock)
-    Draw(dt);
-  else
-    DrawClock(dt);
-  if(IsDrawVolume)
+  Draw(dt);
+
+  if (IsDrawVolume)
     DrawVolumeCount(dt);
 
   sound.Update(dt);
@@ -73,26 +70,13 @@ StateCommand StateNormal::handleEvent(Event e)
 }
 void StateNormal::DrawVolumeCount(float dt)
 {
-    char buffer[7]; // "HH:MM"
-    
-    sprintf(buffer, "Vol:%02d", _volume);
-    display->drawText(buffer, 0, 0, 2);
-    timer -= dt;
-    if(timer<0)
-      IsDrawVolume = false;
-}
-void StateNormal::DrawClock(float dt)
-{
+  char buffer[7]; // "HH:MM"
+
+  sprintf(buffer, "Vol:%02d", _volume);
+  display->drawText(buffer, 0, 0, 2);
   timer -= dt;
   if (timer < 0)
-  {
-    display->clear();
-    timer = ApdateTimeConst;
-    _time = RTCModule::getInstance().getTime();
-    char buffer[6]; // "HH:MM"
-    sprintf(buffer, "%02d:%02d", _time.hour(), _time.minute());
-    display->drawText(buffer, 5, 20, 4);
-  }
+    IsDrawVolume = false;
 }
 void StateNormal::Draw(float dt)
 {

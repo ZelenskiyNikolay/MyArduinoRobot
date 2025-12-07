@@ -21,12 +21,13 @@ void StateSleepy::enter()
 
 void StateSleepy::update(float dt)
 {
-  IsDrawClock = TouchButtons::getInstance().consume(0);
+  if (TouchButtons::getInstance().consume(0))
+  {
+    EventBus::push({EVENT_CHANGE_STATE, STATE_CLOCK});
+  }
 
-  if (!IsDrawClock)
-    Draw(dt);
-  else
-    DrawClock(dt);
+  Draw(dt);
+
   sound.Update(dt);
 }
 

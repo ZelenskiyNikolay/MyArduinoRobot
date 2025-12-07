@@ -4,6 +4,7 @@
 #include "Display/DisplayOled.h"
 #include "StateCommand.h"
 
+
 class FSM {
 public:
     FSM(State* initial, DisplaySystem* dispOld);
@@ -14,7 +15,7 @@ public:
     void update(float dt);
     void handleEvent(Event e);
     void changeState(State* next);
-
+    void changeStateById(StateID id);
 private:
     State* current;
     DisplaySystem* displayOld;
