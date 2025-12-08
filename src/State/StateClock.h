@@ -19,8 +19,12 @@ public:
     void Draw(float dt);
 
 private:
+    void Dimming(float dt);
+
     const float ApdateTimeConst = 30000;
     float timer;
+    float _timerPoint;
+    bool Points;
 
     DateTime _time;
 
