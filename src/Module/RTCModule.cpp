@@ -24,7 +24,7 @@ void RTCModule::begin()
         rtc.adjust(DateTime(F(__DATE__), F(__TIME__)));
     }
     //Установка часов
-    //rtc.adjust(DateTime(F(__DATE__), F(__TIME__)));
+    // rtc.adjust(DateTime(F(__DATE__), F(__TIME__)));
 
     currentTime = rtc.now();
 }

@@ -9,6 +9,10 @@
 #include "Display/DisplayOled.h"
 #include <SD.h>
 
+#include "Move/SafetyModule.h"
+#include "Move/MovementModule.h"
+#include "Move/MotorModule.h"
+
 #include <Adafruit_GFX.h>
 // #include <Adafruit_PCD8544.h>
 #include <Adafruit_SSD1306.h>
@@ -38,6 +42,10 @@ void FpsCount(float dt);
 unsigned long lastTime;
 float currentMillis;
 int callsPerSecond;
+
+MotorModule motor;
+SafetyModule safety(motor);
+MovementModule movement(safety);
 
 float getDeltaTime()
 {
@@ -69,6 +77,21 @@ void setup()
   TouchButtons::getInstance().begin();
 
   fsm = new FSM(new StateNormal(displaySys), &displaySys);
+
+  motor.init();
+
+  movement.forward();
+  delay(200);
+  movement.stop();
+  movement.backward();
+  delay(150);
+  movement.stop();
+  movement.left();
+  delay(200);
+  movement.stop();
+  movement.right();
+  delay(200);
+  movement.stop();
 }
 
 void loop()
