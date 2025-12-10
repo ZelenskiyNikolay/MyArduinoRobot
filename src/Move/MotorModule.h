@@ -6,6 +6,7 @@
 #define B1A 4
 #define B1B 5
 
+
 class MotorModule
 {
 public:
@@ -18,5 +19,6 @@ public:
     void right();
     void stop();
 private:
+    
     
 };

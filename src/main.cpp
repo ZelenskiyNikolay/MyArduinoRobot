@@ -86,24 +86,25 @@ void setup()
 
   motor.init();
 
-  movement.forward();
-  delay(300);
-  movement.stop();
-  delay(1000);
+  // movement.forward();
+  // delay(300);
+  // movement.stop();
+  // delay(1000);
 
-  movement.backward();
-  delay(300);
-  movement.stop();
-  delay(1000);
+  // movement.backward();
+  // delay(300);
+  // movement.stop();
+  // delay(1000);
 
-  movement.left();
-  delay(400);
-  movement.stop();
-  delay(1000);
+  // movement.left();
+  // delay(400);
+  // movement.stop();
+  // delay(1000);
 
-  movement.right();
-  delay(400);
-  movement.stop();
+  // movement.right();
+  // delay(400);
+  // movement.stop();
+  //movement.forward(30000);
 }
 
 void loop()
@@ -131,6 +132,9 @@ void loop()
 
   battery.update(dt);
 
+  
+  //safety.update(dt);
+  movement.MoveDance(dt);
 }
 
 void FpsCount(float dt)

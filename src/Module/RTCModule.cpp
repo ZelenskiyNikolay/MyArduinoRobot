@@ -20,13 +20,19 @@ void RTCModule::begin()
 
     if (rtc.lostPower())
     {
-        Serial.println("RTC остановлен, устанавливаю текущее время...");
-        rtc.adjust(DateTime(F(__DATE__), F(__TIME__)));
+        Serial.println("RTC потерял питание! Время будет сброшено на дату компиляции.");
     }
-    //Установка часов
-    // rtc.adjust(DateTime(F(__DATE__), F(__TIME__)));
+    else
+    {
+        Serial.println("RTC работает, время сохранено.");
+    }
 
     currentTime = rtc.now();
+    Serial.print("Текущее время: ");
+    Serial.println(currentTime.timestamp());
+
+    //Установка часов
+    // rtc.adjust(DateTime(F(__DATE__), F(__TIME__)));
 }
 
 void RTCModule::setUpdateInterval(unsigned long intervalMs)

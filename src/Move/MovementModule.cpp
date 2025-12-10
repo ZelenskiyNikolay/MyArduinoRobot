@@ -1,8 +1,8 @@
 #include "MovementModule.h"
-
+#include "Arduino.h"
 void MovementModule::forward(int time = 20)
 {
-    safety.process(MovementRequest(MoveType::Forward, time));
+    safety.startRequest(MovementRequest(MoveType::Forward, time));
 }
 
 void MovementModule::backward(int time = 20)
@@ -23,4 +23,46 @@ void MovementModule::right(int time = 20)
 void MovementModule::stop()
 {
     safety.process(MovementRequest(MoveType::Stop, 0));
+}
+void MovementModule::MoveDance(float dt)
+{
+    if (!steepReady)
+    {
+        int temp = safety.update(dt);
+        if (temp == 0)
+        { // аварийно сработка датчиков
+        }
+        if (temp < 0)
+            return; // выполняется шаг
+        if (temp > 0)
+            steepReady = true; // шагвыполнен
+    }
+    if (steepReady)
+    {
+        steepReady = false;
+        if (steep > MAX_STEEPS)
+            steep = 0;
+        steep++;
+        Serial.println(steep);
+        if (steep == 1)
+            safety.startRequest(MovementRequest(MoveType::Left, steep * 100));
+        else if (steep == 2)
+            safety.startRequest(MovementRequest(MoveType::Backward, steep * 100));
+        else if (steep == 3)
+            safety.startRequest(MovementRequest(MoveType::Left, steep * 1000));
+        else if (steep == 4)
+            safety.startRequest(MovementRequest(MoveType::Right, steep * 1000));
+        else if (steep == 5)
+            safety.startRequest(MovementRequest(MoveType::Stop, steep * 100));
+        else if (steep == 6)
+            safety.startRequest(MovementRequest(MoveType::Forward, steep * 100));
+        else if (steep == 7)
+            safety.startRequest(MovementRequest(MoveType::Backward, steep * 100));
+        else if (steep == 8)
+            safety.startRequest(MovementRequest(MoveType::Left, steep * 1000));
+        else if (steep == 9)
+            safety.startRequest(MovementRequest(MoveType::Right, steep * 1000));
+        else if (steep == 10)
+            safety.startRequest(MovementRequest(MoveType::Stop, steep * 100));
+    }
 }
