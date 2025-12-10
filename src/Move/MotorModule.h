@@ -11,6 +11,12 @@ class MotorModule
 public:
     void init();
     void execute(const MovementRequest& req);
+
+    void forward();
+    void backward();
+    void left();
+    void right();
+    void stop();
 private:
     
 };

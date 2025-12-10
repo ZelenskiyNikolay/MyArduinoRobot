@@ -10,8 +10,10 @@ enum class MoveType {
 };
 
 struct MovementRequest {
-    MoveType type;
-    float time; // 0–255 например
+    MoveType type =  MoveType::Stop;
+    float time = 0; 
+
+    MovementRequest() = default;
 
     MovementRequest(MoveType t, float dt = 20)
         : type(t), time(dt) {}

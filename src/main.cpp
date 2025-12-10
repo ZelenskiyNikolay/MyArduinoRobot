@@ -81,16 +81,22 @@ void setup()
   motor.init();
 
   movement.forward();
-  delay(200);
+  delay(300);
   movement.stop();
+  delay(1000);
+
   movement.backward();
-  delay(150);
+  delay(300);
   movement.stop();
+  delay(1000);
+
   movement.left();
-  delay(200);
+  delay(400);
   movement.stop();
+  delay(1000);
+
   movement.right();
-  delay(200);
+  delay(400);
   movement.stop();
 }
 
