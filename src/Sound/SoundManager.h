@@ -15,4 +15,5 @@ public:
     void Update(float dt);
     // базовые звуки
 	void RtDt(int Long);
+    void SoundStop();
 };

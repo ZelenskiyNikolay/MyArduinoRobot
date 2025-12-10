@@ -24,6 +24,7 @@ StateClock::StateClock(DisplaySystem &dispOld)
 
 void StateClock::enter()
 {
+  sound.SoundStop();
   display->clear();
   timer = 0;
   _timerPoint = 20;

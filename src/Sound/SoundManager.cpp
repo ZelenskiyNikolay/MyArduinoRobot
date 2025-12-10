@@ -1,18 +1,19 @@
 #include "SoundManager.h"
 #include <toneAC.h>
 
-
 Sound::Sound(int piezoPin)
 {
     pin = piezoPin;
     pinMode(pin, OUTPUT);
 }
 
-uint8_t  Sound::GetVolume(){return _volume;}
+uint8_t Sound::GetVolume() { return _volume; }
+
 void Sound::SetVolume(uint8_t volume)
 {
     _volume = volume;
 }
+
 void Sound::Update(float dt)
 {
     if (longSound > 0)
@@ -30,9 +31,8 @@ void Sound::Update(float dt)
     }
     else
     {
-        longSound=0;
+        longSound = 0;
     }
-    
 }
 
 void Sound::RtDt(int Long)
@@ -42,4 +42,11 @@ void Sound::RtDt(int Long)
     timer = random(10, 80);
 
     toneAC(random(600, 1600), _volume, random(20, 80), true);
+}
+
+void Sound::SoundStop()
+{
+    longSound = 0;
+    noToneAC();
+    digitalWrite(pin, LOW);
 }

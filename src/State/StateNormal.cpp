@@ -41,6 +41,7 @@ void StateNormal::update(float dt)
   }
   if (TouchButtons::getInstance().consume(0))
   {
+    sound = NULL;
     EventBus::push({EVENT_CHANGE_STATE, STATE_CLOCK});
   }
 

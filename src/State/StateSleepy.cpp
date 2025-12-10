@@ -23,6 +23,7 @@ void StateSleepy::update(float dt)
 {
   if (TouchButtons::getInstance().consume(0))
   {
+    sound.SoundStop();
     EventBus::push({EVENT_CHANGE_STATE, STATE_CLOCK});
   }
 

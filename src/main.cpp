@@ -13,6 +13,8 @@
 #include "Move/MovementModule.h"
 #include "Move/MotorModule.h"
 
+#include "Module/BatteryModule.h"
+
 #include <Adafruit_GFX.h>
 // #include <Adafruit_PCD8544.h>
 #include <Adafruit_SSD1306.h>
@@ -47,6 +49,8 @@ MotorModule motor;
 SafetyModule safety(motor);
 MovementModule movement(safety);
 
+BatteryModule battery;
+
 float getDeltaTime()
 {
   unsigned long now = millis();
@@ -77,6 +81,8 @@ void setup()
   TouchButtons::getInstance().begin();
 
   fsm = new FSM(new StateNormal(displaySys), &displaySys);
+
+  battery.begin(A0);
 
   motor.init();
 
@@ -122,6 +128,9 @@ void loop()
   // 3. отрисовка
   displaySys.update();
   FpsCount(dt);
+
+  battery.update(dt);
+
 }
 
 void FpsCount(float dt)
