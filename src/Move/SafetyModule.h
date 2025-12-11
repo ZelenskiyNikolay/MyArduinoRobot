@@ -19,6 +19,7 @@ private:
     bool active = false;
     bool Ready = false;
     SurfaceSensor sensorLeft,sensorRight;
+    SurfaceSensor sensorBack,sensorBackFlow;
     SafetyTriger triger;
 public:
     SafetyModule(MotorModule& motor);

@@ -5,7 +5,7 @@
 #define A1B 3
 #define B1A 4
 #define B1B 5
-
+#define SPEED 128
 
 class MotorModule
 {

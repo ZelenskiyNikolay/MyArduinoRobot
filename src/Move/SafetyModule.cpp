@@ -2,7 +2,7 @@
 #include "SafetyModule.h"
 
 SafetyModule::SafetyModule(MotorModule &motor)
-    : motor(motor),sensorLeft(7),sensorRight(6)
+    : motor(motor),sensorLeft(7),sensorRight(6),sensorBack(14),sensorBackFlow(15)
 {}
 
 void SafetyModule::process(const MovementRequest &req)
@@ -45,13 +45,13 @@ int SafetyModule::update(float dt)
         return 0;
     }
     // Здесь можно добавить проверки датчиков безопасности
-    if (!sensorLeft.GetSensorState() || !sensorRight.GetSensorState()) {
+    if (!sensorLeft.GetSensorState() || !sensorRight.GetSensorState() ||
+        !sensorBackFlow.GetSensorState() || sensorBack.GetSensorState()) {
         motor.stop();
         active = false;
         return 0;  // завершено аварийно
     } 
     elapsed += dt;
-            Serial.println(elapsed);
     if (elapsed >= current.time)
     {
         motor.stop();

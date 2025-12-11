@@ -54,34 +54,34 @@ void MotorModule::execute(const MovementRequest &req)
 
 void MotorModule::forward()
 {
-    digitalWrite(A1A, HIGH);
+    analogWrite(A1A, SPEED);
     digitalWrite(A1B, LOW);
-    digitalWrite(B1A, HIGH);
+    analogWrite(B1A, SPEED);
     digitalWrite(B1B, LOW);
 }
 
 void MotorModule::backward()
 {
     digitalWrite(A1A, LOW);
-    digitalWrite(A1B, HIGH);
+    analogWrite(A1B, SPEED);
     digitalWrite(B1A, LOW);
-    digitalWrite(B1B, HIGH);
+    analogWrite(B1B, SPEED);
 }
 
 void MotorModule::left()
 {
     digitalWrite(A1A, LOW);
-    digitalWrite(A1B, HIGH);
-    digitalWrite(B1A, HIGH);
+    analogWrite(A1B, SPEED);
+    analogWrite(B1A, 150);
     digitalWrite(B1B, LOW);
 }
 
 void MotorModule::right()
 {
-    digitalWrite(A1A, HIGH);
+    analogWrite(A1A, 150);
     digitalWrite(A1B, LOW);
     digitalWrite(B1A, LOW);
-    digitalWrite(B1B, HIGH);
+    analogWrite(B1B, SPEED);
 }
 
 void MotorModule::stop()

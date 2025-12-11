@@ -49,7 +49,6 @@ MotorModule motor;
 SafetyModule safety(motor);
 MovementModule movement(safety);
 
-BatteryModule battery;
 
 float getDeltaTime()
 {
@@ -82,7 +81,8 @@ void setup()
 
   fsm = new FSM(new StateNormal(displaySys), &displaySys);
 
-  battery.begin(A0);
+  BatteryModule::getInstance().begin(A0);
+
 
   motor.init();
 
@@ -130,7 +130,7 @@ void loop()
   displaySys.update();
   FpsCount(dt);
 
-  battery.update(dt);
+  BatteryModule::getInstance().update(dt);
 
   
   //safety.update(dt);
