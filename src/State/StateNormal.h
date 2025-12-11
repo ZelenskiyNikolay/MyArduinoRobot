@@ -27,6 +27,10 @@ private:
 
     DateTime _time;
     
+    bool isDrawingBattery = true;
+    void drawBatteryPercent(int x, int y, int percent);
+    void drawBatteryIcon(int x, int y, int percent);
+
     void DrawClock(float dt);
     bool IsDrawClock = false;
     const float ApdateTimeConst = 1000;

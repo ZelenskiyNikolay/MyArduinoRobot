@@ -35,6 +35,11 @@ void DisplayOled::drawCircle(int16_t x0, int16_t y0, int16_t r, uint16_t color)
     display->drawCircle(x0, y0, r, color);
     NeedUpdate = true;
 }
+void DisplayOled::drawRect(int16_t x, int16_t y, int16_t w, int16_t h, uint16_t color)
+{
+    display->drawRect(x, y, w, h, color);
+    NeedUpdate = true;
+}
 void DisplayOled::fillRect(int16_t x, int16_t y, int16_t w, int16_t h, uint16_t color)
 {
     display->fillRect(x, y, w, h, color);

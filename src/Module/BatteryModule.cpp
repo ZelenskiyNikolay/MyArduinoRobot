@@ -20,3 +20,14 @@ void BatteryModule::update(float dt) {
 float BatteryModule::getVoltage() const {
     return voltage;
 }
+int BatteryModule::getBatteryPercent()
+{
+    
+    float voltage = getVoltage();
+
+    // Адаптируй под свой делитель!
+    if (voltage > 4.18) voltage = 4.18;
+    if (voltage < 3.20) voltage = 3.20;
+
+    return map(voltage * 100, 320, 418, 0, 100);
+}
