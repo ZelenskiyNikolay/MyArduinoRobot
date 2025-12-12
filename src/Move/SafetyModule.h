@@ -2,6 +2,7 @@
 #include "MotorModule.h"
 #include "MovementRequest.h"
 #include "Sensors/SurfaceSensor.h"
+#include "Sensors/UltrasonicSensor.h"
 
 enum SafetyTriger{
     NONE,
@@ -21,6 +22,8 @@ private:
     SurfaceSensor sensorLeft,sensorRight;
     SurfaceSensor sensorBack,sensorBackFlow;
     SafetyTriger triger;
+    
+    UltrasonicModule ultrasonic;//(16,17);
 public:
     SafetyModule(MotorModule& motor);
 

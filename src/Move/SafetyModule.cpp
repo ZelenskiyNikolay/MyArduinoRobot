@@ -2,8 +2,11 @@
 #include "SafetyModule.h"
 
 SafetyModule::SafetyModule(MotorModule &motor)
-    : motor(motor),sensorLeft(7),sensorRight(6),sensorBack(14),sensorBackFlow(15)
-{}
+    : motor(motor),sensorLeft(7),sensorRight(6),sensorBack(14),sensorBackFlow(15),
+    ultrasonic(16,17)
+{
+    ultrasonic.begin();
+}
 
 void SafetyModule::process(const MovementRequest &req)
 {
