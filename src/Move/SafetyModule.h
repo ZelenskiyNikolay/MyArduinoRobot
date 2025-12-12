@@ -9,6 +9,8 @@ enum SafetyTriger
     NONE,
     SENSOR_LEFT,
     SENSOR_RIGHT,
+    SENSOR_BACK,
+    SENSOR_BACK_FLOW,
     MENY_SENSORS
 };
 
@@ -41,4 +43,7 @@ public:
 
 private:
     SafetyModule();
+    bool CheckSensors();
+    SafetyTriger sensorTrigger = SafetyTriger::NONE;
+    bool corection = false;
 };

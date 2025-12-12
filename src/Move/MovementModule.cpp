@@ -31,6 +31,7 @@ void MovementModule::MoveDance(float dt)
         int temp = safety.update(dt);
         if (temp == 0)
         { // аварийно сработка датчиков
+            temp=1;
         }
         if (temp < 0)
             return; // выполняется шаг
@@ -46,16 +47,24 @@ void MovementModule::MoveDance(float dt)
         Serial.println(steep);
 
         if (steep == 1)
-            safety.startRequest(MovementRequest(MoveType::Forward, steep * 1000));
+            safety.startRequest(MovementRequest(MoveType::Forward, 1000));
         else if (steep == 2)
-            safety.startRequest(MovementRequest(MoveType::Backward, 1000));
+            safety.startRequest(MovementRequest(MoveType::Stop, 500));
         else if (steep == 3)
-            safety.startRequest(MovementRequest(MoveType::Left, 2000));
+            safety.startRequest(MovementRequest(MoveType::Backward, 1000));
         else if (steep == 4)
-            safety.startRequest(MovementRequest(MoveType::Right,  2000));
-        else if (steep == 5){
-            safety.startRequest(MovementRequest(MoveType::Stop, steep * 100));
-            steep =0;}
+            safety.startRequest(MovementRequest(MoveType::Stop, 500));
+        else if (steep == 5)
+            safety.startRequest(MovementRequest(MoveType::Left, 2000));
+        else if (steep == 6)
+            safety.startRequest(MovementRequest(MoveType::Stop, 500));
+        else if (steep == 7)
+            safety.startRequest(MovementRequest(MoveType::Right, 2000));
+        else if (steep == 8)
+        {
+            safety.startRequest(MovementRequest(MoveType::Stop, 500));
+            steep = 0;
+        }
         // else if (steep == 6)
         //     safety.startRequest(MovementRequest(MoveType::Forward, steep * 200));
         // else if (steep == 7)
