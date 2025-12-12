@@ -1,8 +1,8 @@
 #include <Arduino.h>
 #include "SafetyModule.h"
 
-SafetyModule::SafetyModule(MotorModule &motor)
-    : motor(motor),sensorLeft(7),sensorRight(6),sensorBack(14),sensorBackFlow(15),
+SafetyModule::SafetyModule()
+    : motor(),sensorLeft(7),sensorRight(6),sensorBack(14),sensorBackFlow(15),
     ultrasonic(16,17)
 {
     ultrasonic.begin();

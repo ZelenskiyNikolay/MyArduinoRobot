@@ -45,9 +45,7 @@ unsigned long lastTime;
 float currentMillis;
 int callsPerSecond;
 
-MotorModule motor;
-SafetyModule safety(motor);
-MovementModule movement(safety);
+MovementModule movement(SafetyModule::getInstance());
 
 
 float getDeltaTime()
@@ -84,7 +82,7 @@ void setup()
   BatteryModule::getInstance().begin(A0);
 
 
-  motor.init();
+  //motor.init();
 
   // movement.forward();
   // delay(300);
