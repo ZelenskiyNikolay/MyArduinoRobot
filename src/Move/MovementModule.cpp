@@ -1,21 +1,21 @@
 #include "MovementModule.h"
 #include "Arduino.h"
-void MovementModule::forward(int time = 20)
+void MovementModule::forward(int time)
 {
     safety.startRequest(MovementRequest(MoveType::Forward, time));
 }
 
-void MovementModule::backward(int time = 20)
+void MovementModule::backward(int time)
 {
     safety.process(MovementRequest(MoveType::Backward, time));
 }
 
-void MovementModule::left(int time = 20)
+void MovementModule::left(int time)
 {
     safety.process(MovementRequest(MoveType::Left, time));
 }
 
-void MovementModule::right(int time = 20)
+void MovementModule::right(int time)
 {
     safety.process(MovementRequest(MoveType::Right, time));
 }
