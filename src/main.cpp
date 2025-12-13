@@ -20,6 +20,7 @@
 #include <Adafruit_SSD1306.h>
 
 #include "Module/RTCModule.h"
+#include <avr/wdt.h>
 
 #define SCREEN_WIDTH 128
 #define SCREEN_HEIGHT 64
@@ -47,7 +48,6 @@ int callsPerSecond;
 
 MovementModule movement(SafetyModule::getInstance());
 
-
 float getDeltaTime()
 {
   unsigned long now = millis();
@@ -58,6 +58,10 @@ float getDeltaTime()
 
 void setup()
 {
+  MCUSR = 0;     // сброс флагов причины ресета
+  wdt_disable(); // отключаем WDT сразу
+  SafetyModule::getInstance().process(MovementRequest(MoveType::Stop, 0));
+
   // display.begin();
   if (!display.begin(SSD1306_SWITCHCAPVCC))
   {
@@ -81,32 +85,12 @@ void setup()
 
   BatteryModule::getInstance().begin(A0);
 
-
-  //motor.init();
-
-  // movement.forward();
-  // delay(300);
-  // movement.stop();
-  // delay(1000);
-
-  // movement.backward();
-  // delay(300);
-  // movement.stop();
-  // delay(1000);
-
-  // movement.left();
-  // delay(400);
-  // movement.stop();
-  // delay(1000);
-
-  // movement.right();
-  // delay(400);
-  // movement.stop();
-  //movement.forward(30000);
+  wdt_enable(WDTO_1S); // Запускаем WDT
 }
 
 void loop()
 {
+  wdt_reset(); // Защита от зависаний Watchdog
 
   float dt = getDeltaTime();
 
@@ -130,8 +114,7 @@ void loop()
 
   BatteryModule::getInstance().update(dt);
 
-  
-  //safety.update(dt);
+  // safety.update(dt);
   movement.MoveDance(dt);
 }
 
