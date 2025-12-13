@@ -7,6 +7,7 @@
 #include "Sound/SoundManager.h"
 #include "StateCommand.h"
 #include <RTClib.h>
+#include "Move/MovementModule.h"
 
 class StateNormal : public State {
 public:

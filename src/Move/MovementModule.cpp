@@ -1,5 +1,9 @@
 #include "MovementModule.h"
 #include "Arduino.h"
+
+MovementModule::MovementModule() : safety(SafetyModule::getInstance())
+{}
+
 void MovementModule::forward(int time)
 {
     safety.startRequest(MovementRequest(MoveType::Forward, time));

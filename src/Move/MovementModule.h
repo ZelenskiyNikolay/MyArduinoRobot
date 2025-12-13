@@ -1,3 +1,4 @@
+#pragma once
 #include "SafetyModule.h"
 
 
@@ -6,13 +7,17 @@
 class MovementModule {
 private:
     SafetyModule& safety;
+    MovementModule();
 
     int steep = 0;
     bool steepReady = true;
     bool ERROR_MOVE = false;
 public:
-    MovementModule(SafetyModule& s) : safety(s) {}
-
+    static MovementModule &getInstance()
+    {
+        static MovementModule instance;
+        return instance;
+    }
      void forward(int time = 20);
      void backward(int time = 20);
      void left(int time = 20);

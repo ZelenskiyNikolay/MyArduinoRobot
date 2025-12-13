@@ -46,7 +46,7 @@ unsigned long lastTime;
 float currentMillis;
 int callsPerSecond;
 
-MovementModule movement(SafetyModule::getInstance());
+
 
 float getDeltaTime()
 {
@@ -113,9 +113,6 @@ void loop()
   FpsCount(dt);
 
   BatteryModule::getInstance().update(dt);
-
-  // safety.update(dt);
-  movement.MoveDance(dt);
 }
 
 void FpsCount(float dt)

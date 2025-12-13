@@ -60,6 +60,8 @@ void StateNormal::update(float dt)
     DrawVolumeCount(dt);
 
   sound.Update(dt);
+  
+  MovementModule::getInstance().MoveDance(dt);
 }
 
 StateCommand StateNormal::handleEvent(Event e)
@@ -121,8 +123,8 @@ void StateNormal::Draw(float dt)
       if (isDrawingBattery)
       {
         int precent = BatteryModule::getInstance().getBatteryPercent();
-        drawBatteryIcon(0, 0, precent);
         drawBatteryPercent(110, 0, precent);
+        drawBatteryIcon(0, 0, precent);
       }
       return;
     }
@@ -149,11 +151,7 @@ void StateNormal::drawBatteryIcon(int x, int y, int percent)
 }
 void StateNormal::drawBatteryPercent(int x, int y, int percent)
 {
-    //display.setTextSize(1);
     char buffer[5]; // "HH:MM"
     sprintf(buffer, "%d%s",percent,"%");
     display->drawText(buffer, x, y, 1);
-    // display.drawLine(x, y);
-    // display.print(percent);
-    // display.print("%");
 }
