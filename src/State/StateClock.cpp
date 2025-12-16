@@ -2,6 +2,7 @@
 #include "Sensors/TouchButtons.h"
 #include "State.h"
 #include "Module/RTCModule.h"
+#include "Module/GlobalSensorsModule.h"
 
 const char* weekDaysRU[] = {
   "Sun",  // 0
@@ -36,6 +37,11 @@ void StateClock::update(float dt)
   if (TouchButtons::getInstance().consume(0))
   {
     EventBus::push({EVENT_CHANGE_STATE, STATE_NORMAL});
+  }
+
+  if (TouchButtons::getInstance().consume(3))
+  {
+    GlobalSensorsModule::getInstance().begin();
   }
 
   Draw(dt);
