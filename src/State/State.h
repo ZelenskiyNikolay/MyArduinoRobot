@@ -3,9 +3,10 @@
 #include "StateCommand.h"
 
 enum StateID {
-    STATE_NORMAL = 0,
-    STATE_SLEEPY = 1,
-    STATE_CLOCK  = 2
+    STATE_START = 0,
+    STATE_NORMAL = 1,
+    STATE_SLEEPY = 2,
+    STATE_CLOCK  = 3
 };
 
 class State {

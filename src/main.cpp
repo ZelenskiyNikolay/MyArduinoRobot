@@ -2,6 +2,7 @@
 #include "Core/EventBus.h"
 #include "State/StateNormal.h"
 #include "State/StateSleepy.h"
+#include "State/StateStart.h"
 #include "Display/DisplaySystem.h"
 #include "Sensors/MotionSensor.h"
 #include "Sensors/TouchButtons.h"
@@ -81,7 +82,7 @@ void setup()
   RTCModule::getInstance().begin();
   TouchButtons::getInstance().begin();
 
-  fsm = new FSM(new StateNormal(displaySys), &displaySys);
+  fsm = new FSM(new StateStart(displaySys), &displaySys);
 
   BatteryModule::getInstance().begin(A0);
 
