@@ -14,7 +14,9 @@ void BatteryModule::update(float dt) {
     int raw = analogRead(pin);
     voltage = (raw / 1023.0f) * 5.0f;  // измеренное напряжение
 
-      Serial.println(getVoltage());//Печать значения в порт
+    voltage *= 0.95f; //калибровка
+
+    Serial.println(getVoltage());//Печать значения в порт
 }
 
 float BatteryModule::getVoltage() const {
@@ -26,8 +28,8 @@ int BatteryModule::getBatteryPercent()
     float voltage = getVoltage();
 
     // Адаптируй под свой делитель!
-    if (voltage > 4.18) voltage = 4.18;
-    if (voltage < 3.20) voltage = 3.20;
+    if (voltage > 4.2) voltage = 4.2;
+    if (voltage < 3.40) voltage = 3.40;
 
-    return map(voltage * 100, 320, 418, 0, 100);
+    return map(voltage * 100, 340, 420, 0, 100);
 }
