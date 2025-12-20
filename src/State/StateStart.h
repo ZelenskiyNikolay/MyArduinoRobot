@@ -9,6 +9,7 @@
 #include "Sound/SoundManager.h"
 #include "StateCommand.h"
 #include "Module/BatteryModule.h"
+#include "Settings/GlobalSettings.h"
 
 enum MenuSelection
 {

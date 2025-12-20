@@ -28,8 +28,8 @@ int BatteryModule::getBatteryPercent()
     float voltage = getVoltage();
 
     // Адаптируй под свой делитель!
-    if (voltage > 4.2) voltage = 4.2;
-    if (voltage < 3.40) voltage = 3.40;
+    if (voltage > 4.0f) return 100;
+    if (voltage < 3.40f) return 0;
 
     return map(voltage * 100, 340, 420, 0, 100);
 }

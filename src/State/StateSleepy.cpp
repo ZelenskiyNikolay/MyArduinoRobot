@@ -15,7 +15,6 @@ StateSleepy::StateSleepy(DisplayOled &disp)
 void StateSleepy::enter()
 {
   display->clear();
-  // display->setContrast();
   sprite.Draw(Emotions::SLEEPY);
 }
 
@@ -27,6 +26,7 @@ void StateSleepy::update(float dt)
     EventBus::push({EVENT_CHANGE_STATE, STATE_CLOCK});
   }
 
+  SafetyModule::getInstance().STOP_MOTORS();
   Draw(dt);
 
   sound.Update(dt);
@@ -34,15 +34,16 @@ void StateSleepy::update(float dt)
 
 StateCommand StateSleepy::handleEvent(Event e)
 {
-  if (e.type == EVENT_MOTION)
-  {
-    sprite.Draw(Emotions::ANGRY);
-
-    if (_time.hour() < 22 && _time.hour() > 6)
+  if (!GlobalSettings::getInstance().NOT_CHENGE_STATE)
+    if (e.type == EVENT_MOTION)
     {
-      return CMD_TO_NORMAL;
+      sprite.Draw(Emotions::ANGRY);
+
+      if (_time.hour() < 22 && _time.hour() > 6)
+      {
+        return CMD_TO_NORMAL;
+      }
     }
-  }
   sound.RtDt(2);
   return CMD_NONE;
 }
@@ -60,7 +61,6 @@ void StateSleepy::DrawClock(float dt)
   }
   else
   {
-
   }
 }
 

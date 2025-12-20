@@ -3,7 +3,7 @@
 #include "Display/DisplaySystem.h"
 #include "Display/DisplayOled.h"
 #include "StateCommand.h"
-
+#include "Settings/GlobalSettings.h"
 
 class FSM {
 public:

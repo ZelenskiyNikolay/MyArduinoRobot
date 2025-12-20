@@ -15,9 +15,7 @@ StateNormal::StateNormal(DisplaySystem &dispOld)
 
 void StateNormal::enter()
 {
-
   display->clear();
-
   timer = 0;
   isDrawingBattery = true;
 }
@@ -26,7 +24,7 @@ void StateNormal::update(float dt)
   if (TouchButtons::getInstance().consume(3))
   {
     isDrawingBattery = !isDrawingBattery;
-    timer = 0;//обнуляем чтобы обновилось сразу
+    timer = 0; // обнуляем чтобы обновилось сразу
   }
   if (TouchButtons::getInstance().consume(2))
   {
@@ -50,7 +48,6 @@ void StateNormal::update(float dt)
   }
   if (TouchButtons::getInstance().consume(0))
   {
-    // sound = NULL;
     EventBus::push({EVENT_CHANGE_STATE, STATE_CLOCK});
   }
 
@@ -60,22 +57,24 @@ void StateNormal::update(float dt)
     DrawVolumeCount(dt);
 
   sound.Update(dt);
-  
+
   MovementModule::getInstance().MoveDance(dt);
 }
 
 StateCommand StateNormal::handleEvent(Event e)
 {
-  if (e.type == EVENT_MOTION)
-  {
-    display->clear();
-    _time = RTCModule::getInstance().getTime();
-
-    if (_time.hour() > 22 || _time.hour() < 6)
+  if (!GlobalSettings::getInstance().NOT_CHENGE_STATE)
+    if (e.type == EVENT_MOTION)
     {
-      return CMD_TO_SLEEPY;
+      display->clear();
+      _time = RTCModule::getInstance().getTime();
+
+      if (_time.hour() > 22 || _time.hour() < 6)
+      {
+        MovementModule::getInstance().stop();
+        return CMD_TO_SLEEPY;
+      }
     }
-  }
   if (!IsDrawClock)
     sound.RtDt(15);
   return CMD_NONE;
@@ -98,7 +97,7 @@ void StateNormal::Draw(float dt)
     if (timer < 0)
     {
       Serial.println(isDrawingBattery);
-    
+
       IsOpen = false;
       timer = Close_Eyes;
       sprite.Draw(Emotions::NORMAL);
@@ -151,7 +150,7 @@ void StateNormal::drawBatteryIcon(int x, int y, int percent)
 }
 void StateNormal::drawBatteryPercent(int x, int y, int percent)
 {
-    char buffer[5]; // "HH:MM"
-    sprintf(buffer, "%d%s",percent,"%");
-    display->drawText(buffer, x, y, 1);
+  char buffer[5]; // "HH:MM"
+  sprintf(buffer, "%d%s", percent, "%");
+  display->drawText(buffer, x, y, 1);
 }

@@ -6,6 +6,9 @@
 #include "Sound/SoundManager.h"
 #include "StateCommand.h"
 #include <RTClib.h>
+#include "Move/MovementModule.h"
+#include "Move/SafetyModule.h"
+#include "Settings/GlobalSettings.h"
 
 class StateSleepy : public State
 {

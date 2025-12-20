@@ -8,6 +8,7 @@
 #include "StateCommand.h"
 #include <RTClib.h>
 #include "Move/MovementModule.h"
+#include "Settings/GlobalSettings.h"
 
 class StateNormal : public State {
 public:

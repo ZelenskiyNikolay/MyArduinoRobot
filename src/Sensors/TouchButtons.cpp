@@ -26,8 +26,6 @@ void TouchButtons::update()
     for (uint8_t i = 0; i < COUNT; i++)
     {
 
-        // raw[i] = digitalRead(pins[i]); // active HIGH (твоя проверка 0 → 4.7V)
-
         if (raw[i] && !lastRaw[i])
         {
             flagPressed[i] = true;

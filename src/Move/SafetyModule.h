@@ -40,6 +40,7 @@ public:
     void startRequest(const MovementRequest &req);
     int update(float dt);
     bool isBusy() const;
+    void STOP_MOTORS();
 
 private:
     SafetyModule();

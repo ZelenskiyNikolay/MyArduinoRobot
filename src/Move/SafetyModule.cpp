@@ -38,7 +38,10 @@ void SafetyModule::startRequest(const MovementRequest &req)
         break;
     }
 }
-
+void SafetyModule::STOP_MOTORS()
+{
+    motor.stop();
+}
 int SafetyModule::update(float dt)
 {
     if (!active)

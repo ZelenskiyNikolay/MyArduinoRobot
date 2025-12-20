@@ -65,6 +65,16 @@ void FSM::changeState(State *next)
 
 void FSM::changeStateById(StateID id)
 {
+    //Останавливаем моторы при смене состояния
+    SafetyModule::getInstance().STOP_MOTORS();
+    MovementModule::getInstance().stop();
+    
+    if(GlobalSettings::getInstance().NOT_CHENGE_STATE && 
+    !GlobalSettings::getInstance().STATE_START)//если менять состояние нельзя
+        return;
+    if(GlobalSettings::getInstance().STATE_START)
+        GlobalSettings::getInstance().STATE_START=false;
+
     switch(id) {
         case STATE_NORMAL:
             changeState(new StateNormal(*display));
@@ -77,7 +87,5 @@ void FSM::changeStateById(StateID id)
         case STATE_CLOCK:
             changeState(new StateClock(*display));
             break;
-
-        // …и так далее
     }
 }
