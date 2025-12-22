@@ -4,6 +4,11 @@
 #include "Display/DisplayOled.h"
 #include "StateCommand.h"
 #include "Settings/GlobalSettings.h"
+#include "StateCalibration.h"
+#include "StateNormal.h"
+#include "StateSleepy.h"
+#include "StateCommand.h"
+#include "StateClock.h"
 
 class FSM {
 public:

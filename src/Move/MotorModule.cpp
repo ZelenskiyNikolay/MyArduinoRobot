@@ -72,13 +72,13 @@ void MotorModule::left()
 {
     digitalWrite(A1A, LOW);
     analogWrite(A1B, SPEED);
-    analogWrite(B1A, 150);
+    analogWrite(B1A, SPEED);
     digitalWrite(B1B, LOW);
 }
 
 void MotorModule::right()
 {
-    analogWrite(A1A, 150);
+    analogWrite(A1A, SPEED);
     digitalWrite(A1B, LOW);
     digitalWrite(B1A, LOW);
     analogWrite(B1B, SPEED);

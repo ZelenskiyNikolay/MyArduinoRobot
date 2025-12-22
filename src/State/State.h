@@ -4,9 +4,10 @@
 
 enum StateID {
     STATE_START = 0,
-    STATE_NORMAL = 1,
-    STATE_SLEEPY = 2,
-    STATE_CLOCK  = 3
+    STATE_CALIBRATION = 1,
+    STATE_NORMAL = 2,
+    STATE_SLEEPY = 3,
+    STATE_CLOCK  = 4
 };
 
 class State {

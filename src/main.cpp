@@ -109,7 +109,7 @@ void loop()
   // 2. логика состояния
   fsm->update(dt);
 
-  SafetyModule::getInstance().update(dt);
+  //SafetyModule::getInstance().update(dt);
   
   // 3. отрисовка
   displaySys.update();

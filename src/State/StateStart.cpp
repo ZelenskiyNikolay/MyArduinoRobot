@@ -32,7 +32,7 @@ void StateStart::update(float dt)
 
         if (TouchButtons::getInstance().consume(1))
         {
-            EventBus::push({EVENT_CHANGE_STATE, STATE_NORMAL});
+            EventBus::push({EVENT_CHANGE_STATE, STATE_CALIBRATION});
         }
         if (TouchButtons::getInstance().consume(2))
         {

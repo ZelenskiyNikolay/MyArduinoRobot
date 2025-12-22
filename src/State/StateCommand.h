@@ -2,6 +2,7 @@
 
 enum StateCommand {
     CMD_NONE = 0,
+    CMD_TO_CALIBRATION,
     CMD_TO_NORMAL,
     CMD_TO_SLEEPY,
     CMD_TO_ANGRY,

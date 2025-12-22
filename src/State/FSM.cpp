@@ -1,8 +1,4 @@
 #include "FSM.h"
-#include "StateNormal.h"
-#include "StateSleepy.h"
-#include "StateCommand.h"
-#include "StateClock.h"
 
 FSM::FSM(State *initial, DisplaySystem *dispOld)
     : current(initial), displayOld(dispOld)
@@ -15,7 +11,6 @@ FSM::FSM(State *initial, DisplayOled *disp)
     current->enter();
 }
 
-
 void FSM::Init(State *initial, DisplayOled *disp)
 {
     current = initial;
@@ -24,7 +19,8 @@ void FSM::Init(State *initial, DisplayOled *disp)
 
 void FSM::update(float dt)
 {
-    if (!current) return;
+    if (!current)
+        return;
     current->update(dt);
 }
 
@@ -32,11 +28,11 @@ void FSM::handleEvent(Event e)
 {
     StateCommand cmd = current->handleEvent(e);
 
-    switch(e.type)
+    switch (e.type)
     {
-        case EVENT_CHANGE_STATE:
-            changeStateById((StateID)e.data);
-            break;
+    case EVENT_CHANGE_STATE:
+        changeStateById((StateID)e.data);
+        break;
 
         // другие события…
     }
@@ -65,27 +61,31 @@ void FSM::changeState(State *next)
 
 void FSM::changeStateById(StateID id)
 {
-    //Останавливаем моторы при смене состояния
+    // Останавливаем моторы при смене состояния
     SafetyModule::getInstance().STOP_MOTORS();
     MovementModule::getInstance().stop();
-    
-    if(GlobalSettings::getInstance().NOT_CHENGE_STATE && 
-    !GlobalSettings::getInstance().STATE_START)//если менять состояние нельзя
+
+    if (GlobalSettings::getInstance().NOT_CHENGE_STATE &&
+        !GlobalSettings::getInstance().STATE_START) // если менять состояние нельзя
         return;
-    if(GlobalSettings::getInstance().STATE_START)
-        GlobalSettings::getInstance().STATE_START=false;
+    if (GlobalSettings::getInstance().STATE_START)
+        GlobalSettings::getInstance().STATE_START = false;
 
-    switch(id) {
-        case STATE_NORMAL:
-            changeState(new StateNormal(*display));
-            break;
+    switch (id)
+    {
+    case STATE_NORMAL:
+        changeState(new StateNormal(*display));
+        break;
 
-        case STATE_SLEEPY:
-            changeState(new StateSleepy(*display));
-            break;
+    case STATE_SLEEPY:
+        changeState(new StateSleepy(*display));
+        break;
 
-        case STATE_CLOCK:
-            changeState(new StateClock(*display));
-            break;
+    case STATE_CLOCK:
+        changeState(new StateClock(*display));
+        break;
+    case STATE_CALIBRATION:
+        changeState(new StateCalibration(*display));
+        break;
     }
 }
