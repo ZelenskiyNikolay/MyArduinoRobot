@@ -6,6 +6,13 @@ SafetyModule::SafetyModule()
       ultrasonic(16, 17)
 {
     ultrasonic.begin();
+    current = MovementRequest(MoveType::Stop, 0);
+    elapsed = 0;
+    active = false;
+    Ready = true;
+    corection = false;
+    sensorTrigger = SafetyTriger::NONE;
+    CheckSensors();
 }
 
 void SafetyModule::process(const MovementRequest &req)
@@ -13,8 +20,25 @@ void SafetyModule::process(const MovementRequest &req)
     motor.execute(req);
 }
 
+void SafetyModule::reset()
+{
+    current = MovementRequest(MoveType::Stop, 0);
+    elapsed = 0;
+    active = false;
+    Ready = true;
+    corection = false;
+    sensorTrigger = SafetyTriger::NONE;
+    motor.stop();
+    bool b = CheckSensors();
+}
+
 void SafetyModule::startRequest(const MovementRequest &req)
 {
+     Serial.print("[REQUEST] type=");
+    Serial.print((int)req.type);
+    Serial.print(" time=");
+    Serial.println(req.time);
+
     current = req;
     elapsed = 0;
     active = true;
@@ -34,6 +58,9 @@ void SafetyModule::startRequest(const MovementRequest &req)
     case MoveType::Right:
         motor.right();
         break;
+    case MoveType::Stop:
+        motor.stop();
+        break;
     default:
         break;
     }
@@ -42,44 +69,72 @@ void SafetyModule::STOP_MOTORS()
 {
     motor.stop();
 }
+
 int SafetyModule::update(float dt)
 {
-    if (!active)
+    
+    Serial.print("[SAFETY] active=");
+    Serial.print(active);
+    Serial.print(" Ready=");
+    Serial.print(Ready);
+    Serial.print(" corection=");
+    Serial.print(corection);
+    Serial.print(" elapsed=");
+    Serial.print(elapsed);
+    Serial.print(" trigger=");
+    Serial.println((int)sensorTrigger);
+
+    // Здесь можно добавить проверки датчиков безопасности
+    if (!active && !Ready && sensorTrigger != SafetyTriger::NONE)
     {
-        if (Ready)
-            return 1;
-        else
-        {
+        // if (Ready)
+        //     return 1;
+        // else
+        // {
+            // if (sensorTrigger == SafetyTriger::NONE)
+            //     return -1;
             corection = true;
-            current.time = 100;
+            // current.time = 100;
             elapsed = 0;
-            active = true;
+
             switch (sensorTrigger)
             {
             case SafetyTriger::SENSOR_LEFT:
-                motor.backward();
+                startRequest(MovementRequest(MoveType::Backward, 100));
+                active = true;
                 break;
             case SafetyTriger::SENSOR_RIGHT:
-                motor.backward();
+                startRequest(MovementRequest(MoveType::Backward, 100));
+                active = true;
                 break;
             case SafetyTriger::SENSOR_BACK:
-                motor.forward();
+                startRequest(MovementRequest(MoveType::Forward, 100));
+                active = true;
                 break;
             case SafetyTriger::SENSOR_BACK_FLOW:
-                motor.forward();
+                startRequest(MovementRequest(MoveType::Forward, 100));
+                active = true;
+                break;
+            case SafetyTriger::NONE: // sensorTrigger == 0
+                startRequest(MovementRequest(MoveType::Stop, 10));
+                Ready = true;
+                corection = false;
+                return 1;
                 break;
             default:
+                startRequest(MovementRequest(MoveType::Stop, 10));
                 break;
             }
-        }
+        // }
     }
-    // Здесь можно добавить проверки датчиков безопасности
     if (!corection)
         if (CheckSensors())
         {
             motor.stop();
             active = false;
             // return 0; // завершено аварийно
+            Ready = false;
+            return -1;
         }
     elapsed += dt;
     if (elapsed >= current.time)

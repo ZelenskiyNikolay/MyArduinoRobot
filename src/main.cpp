@@ -11,8 +11,6 @@
 #include <SD.h>
 
 #include "Move/SafetyModule.h"
-#include "Move/MovementModule.h"
-#include "Move/MotorModule.h"
 
 #include "Module/BatteryModule.h"
 
@@ -47,8 +45,6 @@ unsigned long lastTime;
 float currentMillis;
 int callsPerSecond;
 
-
-
 float getDeltaTime()
 {
   unsigned long now = millis();
@@ -61,9 +57,8 @@ void setup()
 {
   MCUSR = 0;     // сброс флагов причины ресета
   wdt_disable(); // отключаем WDT сразу
-  SafetyModule::getInstance().process(MovementRequest(MoveType::Stop, 0));
+  SafetyModule::getInstance().STOP_MOTORS();
 
-  // display.begin();
   if (!display.begin(SSD1306_SWITCHCAPVCC))
   {
     Serial.begin(9600);
@@ -72,7 +67,6 @@ void setup()
       ;
   }
 
-  // display.setContrast(60);
   display.clearDisplay();
 
   lastTime = millis();

@@ -35,14 +35,16 @@ public:
         return instance;
     }
 
-    void process(const MovementRequest &req);
-
+    
     void startRequest(const MovementRequest &req);
     int update(float dt);
     bool isBusy() const;
     void STOP_MOTORS();
+    void reset();
 
 private:
+    void process(const MovementRequest &req);
+
     SafetyModule();
     bool CheckSensors();
     SafetyTriger sensorTrigger = SafetyTriger::NONE;

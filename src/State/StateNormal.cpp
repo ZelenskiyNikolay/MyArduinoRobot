@@ -71,7 +71,7 @@ StateCommand StateNormal::handleEvent(Event e)
 
       if (_time.hour() > 22 || _time.hour() < 6)
       {
-        MovementModule::getInstance().stop();
+        //MovementModule::getInstance().stop();
         return CMD_TO_SLEEPY;
       }
     }

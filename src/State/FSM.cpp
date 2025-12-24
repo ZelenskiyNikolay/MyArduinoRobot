@@ -61,10 +61,6 @@ void FSM::changeState(State *next)
 
 void FSM::changeStateById(StateID id)
 {
-    // Останавливаем моторы при смене состояния
-    SafetyModule::getInstance().STOP_MOTORS();
-    MovementModule::getInstance().stop();
-
     if (GlobalSettings::getInstance().NOT_CHENGE_STATE &&
         !GlobalSettings::getInstance().STATE_START) // если менять состояние нельзя
         return;

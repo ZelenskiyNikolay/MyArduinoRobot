@@ -19,7 +19,6 @@ public:
         return instance;
     }
      void forward(int time = 20);
-     bool forwardMov(int time = 20);
      void backward(int time = 20);
      void left(int time = 20);
      void right(int time = 20);

@@ -13,9 +13,9 @@ struct MovementRequest {
     MoveType type =  MoveType::Stop;
     float time = 0; 
 
-    MovementRequest() = default;
+    //MovementRequest() = default;
 
-    MovementRequest(MoveType t, float dt = 20)
+    MovementRequest(MoveType t = MoveType::Stop, float dt = 20)
         : type(t), time(dt) {}
 };
 #endif // MOVEMENT_REQUEST_H

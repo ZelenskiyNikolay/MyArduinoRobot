@@ -3,16 +3,11 @@
 
 MovementModule::MovementModule() : safety(SafetyModule::getInstance())
 {
-    safety.process(MovementRequest(MoveType::Stop, 0));
 }
-
+/*
 void MovementModule::forward(int time)
 {
-    safety.startRequest(MovementRequest(MoveType::Forward, time));
-}
-bool MovementModule::forwardMov(int time)
-{
-    safety.startRequest(MovementRequest(MoveType::Forward, time));
+    safety.process(MovementRequest(MoveType::Forward, time));
 }
 void MovementModule::backward(int time)
 {
@@ -33,35 +28,83 @@ void MovementModule::stop()
 {
     safety.process(MovementRequest(MoveType::Stop, 0));
 }
+    */
 void MovementModule::MoveCalibration(float dt)
 {
-    
+    // 1. если шаг выполняется — обновляем safety
     if (!steepReady)
     {
-        int temp = safety.update(dt);
-        if (temp == 0)
-        { // аварийно сработка датчиков
-            temp=1;
-            steep++;
-            steepReady = true;
-        }
-        if (temp < 0)
-            return; // выполняется шаг
-        if (temp > 0) // шагвыполнен
-            safety.startRequest(MovementRequest(MoveType::Forward, 100));
+        int res = safety.update(dt);
+
+        if (res < 0)
+            return; // шаг ещё выполняется
+
+        steepReady = true; // шаг завершён
     }
+
+    // 2. если готовы к следующему шагу
     if (steepReady)
     {
         steepReady = false;
-        // if (steep > MAX_STEEPS)
-        //     steep = 0;
-        // steep++;
-        // Serial.println(steep);
+        steep++;
+        Serial.println(steep);
 
-        if (steep == 1)
-            safety.startRequest(MovementRequest(MoveType::Forward, 1000));
+        switch (steep)
+        {
+        case 1:
+            // едем вперёд ДО КРАЯ (safety должен сам остановить)
+            safety.startRequest(MovementRequest(MoveType::Forward, 5000));
+            break;
+
+        case 2:
+            safety.startRequest(MovementRequest(MoveType::Stop, 300));
+            break;
+
+        case 3:
+            // поворот налево 90°
+            safety.startRequest(MovementRequest(MoveType::Left, 1100)); // подстрой
+            break;
+
+        case 4:
+            safety.startRequest(MovementRequest(MoveType::Stop, 300));
+            break;
+
+        case 5:
+        {
+            // int distX = Sensors.getUltrasound(); // <-- твой метод
+            // GlobalSettings::getInstance().setX(distX);
+            steepReady = true; // мгновенный шаг
+            break;
+        }
+
+        case 6:
+            safety.startRequest(MovementRequest(MoveType::Left, 1100));
+            break;
+
+        case 7:
+            safety.startRequest(MovementRequest(MoveType::Stop, 300));
+            break;
+
+        case 8:
+        {
+            // int distY = Sensors.getUltrasound();
+            // GlobalSettings::getInstance().setY(distY);
+            steepReady = true;
+            break;
+        }
+         default:
+        {
+            safety.startRequest(MovementRequest(MoveType::Stop, 0));
+            if (steep > 9)
+                steep = 9;
+            // steep = 0;
+            //  тут переход в NormalState
+            break;
+        }
+        }
     }
 }
+
 void MovementModule::MoveDance(float dt)
 {
     if (!steepReady)
@@ -69,7 +112,7 @@ void MovementModule::MoveDance(float dt)
         int temp = safety.update(dt);
         if (temp == 0)
         { // аварийно сработка датчиков
-            temp=1;
+            temp = 1;
         }
         if (temp < 0)
             return; // выполняется шаг
@@ -97,7 +140,7 @@ void MovementModule::MoveDance(float dt)
         else if (steep == 6)
             safety.startRequest(MovementRequest(MoveType::Stop, 500));
         else if (steep == 7)
-            safety.startRequest(MovementRequest(MoveType::Right, 1100));// 1100 Примерно 90"
+            safety.startRequest(MovementRequest(MoveType::Right, 1100)); // 1100 Примерно 90"
         else if (steep == 8)
         {
             safety.startRequest(MovementRequest(MoveType::Stop, 500));

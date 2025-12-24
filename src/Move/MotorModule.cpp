@@ -1,57 +1,48 @@
 #include <Arduino.h>
 #include "MovementRequest.h"
 #include "MotorModule.h"
-
+#include "SafetyModule.h"
 void MotorModule::init()
 {
     pinMode(A1A, OUTPUT);
     pinMode(A1B, OUTPUT);
     pinMode(B1A, OUTPUT);
     pinMode(B1B, OUTPUT);
-}
 
+    // digitalWrite(A1A, LOW);
+    // digitalWrite(A1B, LOW);
+    // digitalWrite(B1A, LOW);
+    // digitalWrite(B1B, LOW);
+
+    SafetyModule::getInstance().reset();
+
+    stop();
+}
 void MotorModule::execute(const MovementRequest &req)
 {
     switch (req.type)
     {
     case MoveType::Forward:
-        digitalWrite(A1A, HIGH);
-        digitalWrite(A1B, LOW);
-        digitalWrite(B1A, HIGH);
-        digitalWrite(B1B, LOW);
+        forward();
         break;
 
     case MoveType::Backward:
-        digitalWrite(A1A, LOW);
-        digitalWrite(A1B, HIGH);
-        digitalWrite(B1A, LOW);
-        digitalWrite(B1B, HIGH);
+        backward();
         break;
 
     case MoveType::Left:
-        digitalWrite(A1A, LOW);
-        digitalWrite(A1B, HIGH);
-        digitalWrite(B1A, HIGH);
-        digitalWrite(B1B, LOW);
+        left();
         break;
 
     case MoveType::Right:
-        digitalWrite(A1A, HIGH);
-        digitalWrite(A1B, LOW);
-        digitalWrite(B1A, LOW);
-        digitalWrite(B1B, HIGH);
+        right();
         break;
 
     case MoveType::Stop:
-    default:
-        digitalWrite(A1A, LOW);
-        digitalWrite(A1B, LOW);
-        digitalWrite(B1A, LOW);
-        digitalWrite(B1B, LOW);
+        stop();
         break;
     }
 }
-
 void MotorModule::forward()
 {
     analogWrite(A1A, SPEED);
@@ -86,8 +77,12 @@ void MotorModule::right()
 
 void MotorModule::stop()
 {
-    digitalWrite(A1A, LOW);
-    digitalWrite(A1B, LOW);
-    digitalWrite(B1A, LOW);
-    digitalWrite(B1B, LOW);
+    // digitalWrite(A1A, LOW);
+    // digitalWrite(A1B, LOW);
+    // digitalWrite(B1A, LOW);
+    // digitalWrite(B1B, LOW);
+    analogWrite(A1A, 0);
+    analogWrite(A1B, 0);
+    analogWrite(B1A, 0);
+    analogWrite(B1B, 0);
 }
