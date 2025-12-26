@@ -3,7 +3,7 @@
 
 SafetyModule::SafetyModule()
     : motor(), sensorLeft(7), sensorRight(6), sensorBack(14), sensorBackFlow(15),
-      ultrasonic(16, 17)
+      ultrasonic(28, 26)
 {
     ultrasonic.begin();
     current = MovementRequest(MoveType::Stop, 0);

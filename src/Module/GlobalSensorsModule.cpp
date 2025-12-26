@@ -1,6 +1,6 @@
 #include "GlobalSensorsModule.h"
 
-GlobalSensorsModule::GlobalSensorsModule() : light(18),sound(19)
+GlobalSensorsModule::GlobalSensorsModule() : light(32),sound(34)
 {
     begin();
 }
