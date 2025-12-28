@@ -3,6 +3,7 @@
 #include "MovementRequest.h"
 #include "Sensors/SurfaceSensor.h"
 #include "Sensors/UltrasonicSensor.h"
+#include "Sensors/RPM_sensor.h"
 
 enum SafetyTriger
 {
@@ -28,6 +29,10 @@ private:
     SafetyTriger triger;
 
     UltrasonicModule ultrasonic; //(16,17);
+
+    RPM_sensor leftEnc;   // INT5
+    RPM_sensor rightEnc;  // INT4
+
 public:
     static SafetyModule &getInstance()
     {
@@ -41,7 +46,8 @@ public:
     bool isBusy() const;
     void STOP_MOTORS();
     void reset();
-
+    long GetTics(bool left = true);
+    void ResetStips();
 private:
     void process(const MovementRequest &req);
 

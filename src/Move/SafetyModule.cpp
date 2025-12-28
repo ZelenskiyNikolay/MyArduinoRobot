@@ -3,8 +3,10 @@
 
 SafetyModule::SafetyModule()
     : motor(), sensorLeft(7), sensorRight(6), sensorBack(14), sensorBackFlow(15),
-      ultrasonic(28, 26)
+      ultrasonic(28, 26), leftEnc(18), rightEnc(19)
 {
+    leftEnc.begin();
+    rightEnc.begin();
     ultrasonic.begin();
     current = MovementRequest(MoveType::Stop, 0);
     elapsed = 0;
@@ -34,7 +36,7 @@ void SafetyModule::reset()
 
 void SafetyModule::startRequest(const MovementRequest &req)
 {
-     Serial.print("[REQUEST] type=");
+    Serial.print("[REQUEST] type=");
     Serial.print((int)req.type);
     Serial.print(" time=");
     Serial.println(req.time);
@@ -70,20 +72,25 @@ void SafetyModule::STOP_MOTORS()
     motor.stop();
 }
 
+long SafetyModule::GetTics(bool left = true)
+{
+    if (left)
+    {
+        return leftEnc.GetSensorState();
+    }
+    else
+    {
+        return rightEnc.GetSensorState();
+    }
+}
+void SafetyModule::ResetStips()
+{
+    leftEnc.ResetTicks();
+    rightEnc.ResetTicks();
+}
+
 int SafetyModule::update(float dt)
 {
-    
-    Serial.print("[SAFETY] active=");
-    Serial.print(active);
-    Serial.print(" Ready=");
-    Serial.print(Ready);
-    Serial.print(" corection=");
-    Serial.print(corection);
-    Serial.print(" elapsed=");
-    Serial.print(elapsed);
-    Serial.print(" trigger=");
-    Serial.println((int)sensorTrigger);
-
     // Здесь можно добавить проверки датчиков безопасности
     if (!active && !Ready && sensorTrigger != SafetyTriger::NONE)
     {
@@ -91,40 +98,40 @@ int SafetyModule::update(float dt)
         //     return 1;
         // else
         // {
-            // if (sensorTrigger == SafetyTriger::NONE)
-            //     return -1;
-            corection = true;
-            // current.time = 100;
-            elapsed = 0;
+        // if (sensorTrigger == SafetyTriger::NONE)
+        //     return -1;
+        corection = true;
+        // current.time = 100;
+        elapsed = 0;
 
-            switch (sensorTrigger)
-            {
-            case SafetyTriger::SENSOR_LEFT:
-                startRequest(MovementRequest(MoveType::Backward, 100));
-                active = true;
-                break;
-            case SafetyTriger::SENSOR_RIGHT:
-                startRequest(MovementRequest(MoveType::Backward, 100));
-                active = true;
-                break;
-            case SafetyTriger::SENSOR_BACK:
-                startRequest(MovementRequest(MoveType::Forward, 100));
-                active = true;
-                break;
-            case SafetyTriger::SENSOR_BACK_FLOW:
-                startRequest(MovementRequest(MoveType::Forward, 100));
-                active = true;
-                break;
-            case SafetyTriger::NONE: // sensorTrigger == 0
-                startRequest(MovementRequest(MoveType::Stop, 10));
-                Ready = true;
-                corection = false;
-                return 1;
-                break;
-            default:
-                startRequest(MovementRequest(MoveType::Stop, 10));
-                break;
-            }
+        switch (sensorTrigger)
+        {
+        case SafetyTriger::SENSOR_LEFT:
+            startRequest(MovementRequest(MoveType::Backward, 100));
+            active = true;
+            break;
+        case SafetyTriger::SENSOR_RIGHT:
+            startRequest(MovementRequest(MoveType::Backward, 100));
+            active = true;
+            break;
+        case SafetyTriger::SENSOR_BACK:
+            startRequest(MovementRequest(MoveType::Forward, 100));
+            active = true;
+            break;
+        case SafetyTriger::SENSOR_BACK_FLOW:
+            startRequest(MovementRequest(MoveType::Forward, 100));
+            active = true;
+            break;
+        case SafetyTriger::NONE: // sensorTrigger == 0
+            startRequest(MovementRequest(MoveType::Stop, 10));
+            Ready = true;
+            corection = false;
+            return 1;
+            break;
+        default:
+            startRequest(MovementRequest(MoveType::Stop, 10));
+            break;
+        }
         // }
     }
     if (!corection)

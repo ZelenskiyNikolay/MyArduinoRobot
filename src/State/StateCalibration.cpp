@@ -15,10 +15,6 @@ void StateCalibration::enter()
 {
     display->clear();
     display->drawText("Calibration:", 0, 0, 1);
-    // MovementModule::getInstance().stop();
-    // SafetyModule::getInstance().reset();
-    // SafetyModule::getInstance().STOP_MOTORS();
-    //SafetyModule::getInstance().startRequest(MovementRequest(MoveType::Stop, 0));
 }
 void StateCalibration::update(float dt)
 {
@@ -40,10 +36,24 @@ void StateCalibration::update(float dt)
     if (TouchButtons::getInstance().consume(3))
     {
         SafetyModule::getInstance().startRequest(MovementRequest(MoveType::Stop, 0));
+        SafetyModule::getInstance().ResetStips();
     }
     // MovementModule::getInstance().MoveCalibration(dt);
- 
+
+    Draw(dt);
 }
 void StateCalibration::Draw(float dt)
 {
+    timer -= dt;
+    if (timer < 0)
+    {
+        display->clear();
+        display->drawText("Calibration:", 0, 0, 1);
+        char buffer[16];
+        sprintf(buffer, "Left: %d",SafetyModule::getInstance().GetTics(true));
+        display->drawText(buffer, 0, 20, 1);
+        sprintf(buffer, "Right: %d",SafetyModule::getInstance().GetTics(false));
+        display->drawText(buffer, 0, 30, 1);
+        timer = 500;
+    }
 }

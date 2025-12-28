@@ -23,8 +23,6 @@ public:
 
 private:
 
-    const float Open_Eyes = 10000;
-    const float Close_Eyes = 1000;
     bool IsOpen;
     float timer;
 
