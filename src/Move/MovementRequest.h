@@ -6,7 +6,8 @@ enum class MoveType {
     Forward,
     Backward,
     Left,
-    Right
+    Right,
+    Left90
 };
 
 struct MovementRequest {

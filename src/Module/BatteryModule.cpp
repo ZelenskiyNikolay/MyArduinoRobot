@@ -14,7 +14,7 @@ void BatteryModule::update(float dt) {
     int raw = analogRead(pin);
     voltage = (raw / 1023.0f) * 5.0f;  // измеренное напряжение
 
-    voltage *= 0.95f; //калибровка
+    //voltage *= 0.95f; //калибровка
 
     Serial.println(getVoltage());//Печать значения в порт
 }

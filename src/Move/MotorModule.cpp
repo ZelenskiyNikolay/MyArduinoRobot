@@ -9,11 +9,6 @@ void MotorModule::init()
     pinMode(B1A, OUTPUT);
     pinMode(B1B, OUTPUT);
 
-    // digitalWrite(A1A, LOW);
-    // digitalWrite(A1B, LOW);
-    // digitalWrite(B1A, LOW);
-    // digitalWrite(B1B, LOW);
-
     SafetyModule::getInstance().reset();
 
     stop();
@@ -45,44 +40,85 @@ void MotorModule::execute(const MovementRequest &req)
 }
 void MotorModule::forward()
 {
-    analogWrite(A1A, SPEED);
-    digitalWrite(A1B, LOW);
-    analogWrite(B1A, SPEED);
-    digitalWrite(B1B, LOW);
+    analogWrite(A1A, SPEED + corrLeft);
+    analogWrite(A1B, 0);
+    analogWrite(B1A, SPEED + corrRight);
+    analogWrite(B1B, 0);
+}
+void MotorModule::forward(int Left, int Right)
+{
+    analogWrite(A1A, corrLeft + Left);
+    analogWrite(A1B, 0);
+    analogWrite(B1A, corrRight + Right);
+    analogWrite(B1B, 0);
 }
 
 void MotorModule::backward()
 {
     digitalWrite(A1A, LOW);
-    analogWrite(A1B, SPEED);
+    analogWrite(A1B, SPEED + corrLeft);
     digitalWrite(B1A, LOW);
-    analogWrite(B1B, SPEED);
+    analogWrite(B1B, SPEED + corrRight);
+}
+
+void MotorModule::backward(int Left, int Right)
+{
+    digitalWrite(A1A, LOW);
+    analogWrite(A1B, corrLeft + Left);
+    digitalWrite(B1A, LOW);
+    analogWrite(B1B, corrRight + Right);
 }
 
 void MotorModule::left()
 {
     digitalWrite(A1A, LOW);
-    analogWrite(A1B, SPEED);
-    analogWrite(B1A, SPEED);
+    analogWrite(A1B, SPEED + corrLeft);
+    analogWrite(B1A, SPEED + corrRight);
+    digitalWrite(B1B, LOW);
+}
+void MotorModule::left(int Left, int Right)
+{
+    digitalWrite(A1A, LOW);
+    analogWrite(A1B, SPEED + corrLeft + Left);
+    analogWrite(B1A, SPEED + corrRight + Right);
     digitalWrite(B1B, LOW);
 }
 
 void MotorModule::right()
 {
-    analogWrite(A1A, SPEED);
+    analogWrite(A1A, SPEED + corrLeft);
     digitalWrite(A1B, LOW);
     digitalWrite(B1A, LOW);
-    analogWrite(B1B, SPEED);
+    analogWrite(B1B, SPEED + corrRight);
+}
+void MotorModule::right(int Left, int Right)
+{
+    analogWrite(A1A, SPEED + corrLeft + Left);
+    digitalWrite(A1B, LOW);
+    digitalWrite(B1A, LOW);
+    analogWrite(B1B, SPEED + corrRight + Right);
 }
 
 void MotorModule::stop()
 {
-    // digitalWrite(A1A, LOW);
-    // digitalWrite(A1B, LOW);
-    // digitalWrite(B1A, LOW);
-    // digitalWrite(B1B, LOW);
     analogWrite(A1A, 0);
     analogWrite(A1B, 0);
     analogWrite(B1A, 0);
     analogWrite(B1B, 0);
+}
+
+void MotorModule::setCorrectionLeft(int v)
+{
+    corrLeft += v;
+    corrLeft = constrain(corrLeft, -MAX_CORR, MAX_CORR);
+}
+void MotorModule::setCorrectionRight(int v)
+{
+    corrRight += v;
+    corrRight = constrain(corrRight, -MAX_CORR, MAX_CORR);
+}
+void MotorModule::ResetCorrection()
+{
+    corrRight = 0;
+    corrLeft = 0;
 }

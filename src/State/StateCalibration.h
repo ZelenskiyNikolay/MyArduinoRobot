@@ -25,6 +25,7 @@ private:
 
     bool IsOpen;
     float timer;
+    float timer1;
 
     DateTime _time;
     

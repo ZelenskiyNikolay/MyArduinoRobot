@@ -57,6 +57,10 @@ void SafetyModule::startRequest(const MovementRequest &req)
     case MoveType::Left:
         motor.left();
         break;
+    case MoveType::Left90:
+        ResetStips();
+        //Turn90Left();
+        break;
     case MoveType::Right:
         motor.right();
         break;
@@ -83,10 +87,25 @@ long SafetyModule::GetTics(bool left = true)
         return rightEnc.GetSensorState();
     }
 }
+int SafetyModule::GetCorrections(bool left = true)
+{
+    if (left)
+    {
+        return motor.corrLeft;
+    }
+    else
+    {
+        return motor.corrRight;
+    }
+}
 void SafetyModule::ResetStips()
 {
     leftEnc.ResetTicks();
     rightEnc.ResetTicks();
+}
+void SafetyModule::ResetCorrections()
+{
+    motor.ResetCorrection();
 }
 
 int SafetyModule::update(float dt)
@@ -94,14 +113,8 @@ int SafetyModule::update(float dt)
     // Здесь можно добавить проверки датчиков безопасности
     if (!active && !Ready && sensorTrigger != SafetyTriger::NONE)
     {
-        // if (Ready)
-        //     return 1;
-        // else
-        // {
-        // if (sensorTrigger == SafetyTriger::NONE)
-        //     return -1;
         corection = true;
-        // current.time = 100;
+
         elapsed = 0;
 
         switch (sensorTrigger)
@@ -132,9 +145,20 @@ int SafetyModule::update(float dt)
             startRequest(MovementRequest(MoveType::Stop, 10));
             break;
         }
-        // }
     }
     if (!corection)
+    {
+        if (current.type == MoveType::Left90)
+        {
+            return Turn90Left();
+        }
+        timer -= dt;
+        if (timer < 0)
+        {
+            if (current.type == MoveType::Forward || current.type == MoveType::Backward)
+                CorrectMove();
+            timer = 100;
+        }
         if (CheckSensors())
         {
             motor.stop();
@@ -143,6 +167,7 @@ int SafetyModule::update(float dt)
             Ready = false;
             return -1;
         }
+    }
     elapsed += dt;
     if (elapsed >= current.time)
     {
@@ -155,7 +180,63 @@ int SafetyModule::update(float dt)
     }
     return -1; // еще выполняется
 }
+int SafetyModule::Turn90Left()
+{
+    if (GetTics() >= ticks90) //&& GetTics(false) >= ticks90)
+    {
+        motor.stop();
+        active = false;
+        return 1; // завершено
+    }
+    motor.left(); // правое вперёд, левое назад
+    return -1;    // ещё крутится
+}
+void SafetyModule::CorrectMove()
+{
+    const int k = 1; // коэффициент коррекции (2–6)
+    const int deadzone = 1;
 
+    int l = GetTics(true);
+    int r = GetTics(false);
+
+    int dl = l - prevLeftTicks;
+    int dr = r - prevRightTicks;
+
+    if (dl == 0 && dr == 0)
+        return;
+
+    prevLeftTicks = l;
+    prevRightTicks = r;
+
+    int error = dl - dr;
+
+    if (active)
+    {
+        int speedL;
+        int speedR;
+        if (abs(error) > deadzone)
+        {
+            if (error > 0)
+            {
+                speedL = SPEED - k;
+                speedR = SPEED + k;
+            }
+            else
+            {
+                speedL = SPEED + k;
+                speedR = SPEED - k;
+            }
+
+            speedL = constrain(speedL, 0, 255);
+            speedR = constrain(speedR, 0, 255);
+
+            if (current.type == MoveType::Forward)
+                motor.forward(speedL, speedR);
+            else if (current.type == MoveType::Backward)
+                motor.backward(speedL, speedR);
+        }
+    }
+}
 bool SafetyModule::isBusy() const
 {
     return active;

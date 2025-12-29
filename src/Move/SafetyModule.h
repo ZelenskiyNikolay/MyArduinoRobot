@@ -5,6 +5,7 @@
 #include "Sensors/UltrasonicSensor.h"
 #include "Sensors/RPM_sensor.h"
 
+#define ticks90 25
 enum SafetyTriger
 {
     NONE,
@@ -30,8 +31,13 @@ private:
 
     UltrasonicModule ultrasonic; //(16,17);
 
-    RPM_sensor leftEnc;   // INT5
-    RPM_sensor rightEnc;  // INT4
+    RPM_sensor leftEnc;  // INT5
+    RPM_sensor rightEnc; // INT4
+
+    int prevLeftTicks = 0;
+    int prevRightTicks = 0;
+
+    float timer = 200;
 
 public:
     static SafetyModule &getInstance()
@@ -40,7 +46,6 @@ public:
         return instance;
     }
 
-    
     void startRequest(const MovementRequest &req);
     int update(float dt);
     bool isBusy() const;
@@ -48,6 +53,10 @@ public:
     void reset();
     long GetTics(bool left = true);
     void ResetStips();
+    int GetCorrections(bool left = true);
+    void ResetCorrections();
+    void CorrectMove();
+    int Turn90Left();
 private:
     void process(const MovementRequest &req);
 
