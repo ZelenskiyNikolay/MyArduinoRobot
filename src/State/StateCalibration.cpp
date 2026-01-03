@@ -23,11 +23,12 @@ void StateCalibration::update(float dt)
 
     if (TouchButtons::getInstance().consume(0))
     {
-        Serial.println("!! Кнопка нажата !! ----------------------------------------------- ");
+        SafetyModule::getInstance().ResetStips();
         SafetyModule::getInstance().startRequest(MovementRequest(MoveType::Forward, 2000));
     }
     if (TouchButtons::getInstance().consume(1))
     {
+        SafetyModule::getInstance().ResetStips();
         SafetyModule::getInstance().startRequest(MovementRequest(MoveType::Backward, 1000));
     }
     if (TouchButtons::getInstance().consume(2))
@@ -36,11 +37,9 @@ void StateCalibration::update(float dt)
     }
     if (TouchButtons::getInstance().consume(3))
     {
-        SafetyModule::getInstance().startRequest(MovementRequest(MoveType::Stop, 0));
-        SafetyModule::getInstance().ResetStips();
+          distnce = SafetyModule::getInstance().GetDistance();
     }
-    // MovementModule::getInstance().MoveCalibration(dt);
-    
+     
     Draw(dt);
 }
 
@@ -56,10 +55,11 @@ void StateCalibration::Draw(float dt)
         display->drawText(buffer, 0, 20, 1);
         sprintf(buffer, "Right: %d", SafetyModule::getInstance().GetTics(false));
         display->drawText(buffer, 0, 30, 1);
-        sprintf(buffer, "L Cor: %d", SafetyModule::getInstance().GetCorrections());
+        char buf[5];
+        dtostrf(distnce, 1, 1,buf);
+        sprintf(buffer, "Dis: %s cm", buf);
         display->drawText(buffer, 0, 40, 1);
-        sprintf(buffer, "R Cor: %d", SafetyModule::getInstance().GetCorrections(false));
-        display->drawText(buffer, 0, 50, 1);
+       
         timer = 500;
     }
 }

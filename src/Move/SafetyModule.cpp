@@ -22,6 +22,8 @@ void SafetyModule::process(const MovementRequest &req)
     motor.execute(req);
 }
 
+float SafetyModule::GetDistance() {return ultrasonic.getDistance();}
+
 void SafetyModule::reset()
 {
     current = MovementRequest(MoveType::Stop, 0);
@@ -59,7 +61,6 @@ void SafetyModule::startRequest(const MovementRequest &req)
         break;
     case MoveType::Left90:
         ResetStips();
-        //Turn90Left();
         break;
     case MoveType::Right:
         motor.right();

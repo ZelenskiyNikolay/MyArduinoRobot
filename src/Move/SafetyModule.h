@@ -57,6 +57,8 @@ public:
     void ResetCorrections();
     void CorrectMove();
     int Turn90Left();
+    
+    float GetDistance();
 private:
     void process(const MovementRequest &req);
 

@@ -6,17 +6,21 @@ void BatteryModule::begin(uint8_t pin) {
 
 void BatteryModule::update(float dt) {
     
+    if (dt <= 0 || dt > 1000) return;
+
     lastUpdate += dt;
 
     if (lastUpdate - dt < 20000) return;  // обновление раз в 20 секунд
-        lastUpdate = 0;
+
+    lastUpdate = 0;
 
     int raw = analogRead(pin);
     voltage = (raw / 1023.0f) * 5.0f;  // измеренное напряжение
 
     //voltage *= 0.95f; //калибровка
 
-    Serial.println(getVoltage());//Печать значения в порт
+    Serial.print(getVoltage());//Печать значения в порт
+    Serial.println(" V");
 }
 
 float BatteryModule::getVoltage() const {

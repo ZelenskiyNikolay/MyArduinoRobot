@@ -50,13 +50,24 @@ float getDeltaTime()
   unsigned long now = millis();
   unsigned long dt = now - lastTime;
   lastTime = now;
+  
   return dt;
 }
 
 void setup()
 {
+  byte status = MCUSR;
   MCUSR = 0;     // сброс флагов причины ресета
   wdt_disable(); // отключаем WDT сразу
+  if (status & (1 << PORF))
+    Serial.println("Reset: Power-on");
+  if (status & (1 << EXTRF))
+    Serial.println("Reset: External (Button)");
+  if (status & (1 << BORF))
+    Serial.println("Reset: Brown-out (Power drop)");
+  if (status & (1 << WDRF))
+    Serial.println("Reset: Watchdog");
+
   SafetyModule::getInstance().STOP_MOTORS();
 
   if (!display.begin(SSD1306_SWITCHCAPVCC))
@@ -103,13 +114,18 @@ void loop()
   // 2. логика состояния
   fsm->update(dt);
 
-  //SafetyModule::getInstance().update(dt);
-  
   // 3. отрисовка
   displaySys.update();
   FpsCount(dt);
 
   BatteryModule::getInstance().update(dt);
+}
+
+int freeMemory() {
+  char top;
+  extern int *__brkval;
+  extern int __heap_start;
+  return (int) &top - (__brkval == 0 ? (int) &__heap_start : (int) __brkval);
 }
 
 void FpsCount(float dt)
@@ -119,7 +135,9 @@ void FpsCount(float dt)
   if (currentMillis >= 1000)
   {
     Serial.print("Вызовов в секунду: ");
-    Serial.println(callsPerSecond);
+    Serial.print(callsPerSecond);
+    Serial.print(" Память: ");
+    Serial.println(freeMemory());
     callsPerSecond = 0;
     currentMillis = 0;
   }
