@@ -6,6 +6,7 @@
 #include "Sensors/RPM_sensor.h"
 
 #define ticks90 25
+
 enum SafetyTriger
 {
     NONE,
@@ -59,6 +60,7 @@ public:
     int Turn90Left();
     
     float GetDistance();
+    void TriggerUltrasonic();
 private:
     void process(const MovementRequest &req);
 

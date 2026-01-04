@@ -21,7 +21,7 @@ public:
     void Draw(float dt);
 
 private:
-    float distnce = 0;
+    float distance = 0;
     bool IsOpen;
     float timer;
     float timer1;

@@ -1,6 +1,7 @@
 #include "StateCalibration.h"
 #include "Sensors/TouchButtons.h"
 #include "Move/SafetyModule.h"
+#include "Module/SDModule.h"
 
 StateCalibration::StateCalibration(DisplayOled &disp)
     : display(&disp), sprite(&disp), sound(12)
@@ -16,6 +17,11 @@ void StateCalibration::enter()
     display->clear();
     display->drawText("Calibration:", 0, 0, 1);
     timer = 0;
+    SDModule::getInstance().begin();
+    int angle = SDModule::getInstance().getIntConfig("angle", 110);
+    Serial.print(F("Угол прочитано: "));
+    Serial.println(angle);
+
 }
 void StateCalibration::update(float dt)
 {
@@ -37,9 +43,13 @@ void StateCalibration::update(float dt)
     }
     if (TouchButtons::getInstance().consume(3))
     {
-          distnce = SafetyModule::getInstance().GetDistance();
+        // distnce = SafetyModule::getInstance().GetDistance();
+        SafetyModule::getInstance().TriggerUltrasonic();
     }
-     
+
+    float temp = SafetyModule::getInstance().GetDistance();
+    if (temp > 0){ distance = temp; }
+
     Draw(dt);
 }
 
@@ -56,10 +66,10 @@ void StateCalibration::Draw(float dt)
         sprintf(buffer, "Right: %d", SafetyModule::getInstance().GetTics(false));
         display->drawText(buffer, 0, 30, 1);
         char buf[5];
-        dtostrf(distnce, 1, 1,buf);
+        dtostrf(distance, 1, 1, buf);
         sprintf(buffer, "Dis: %s cm", buf);
         display->drawText(buffer, 0, 40, 1);
-       
+
         timer = 500;
     }
 }

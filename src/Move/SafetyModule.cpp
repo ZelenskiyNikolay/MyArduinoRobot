@@ -2,8 +2,8 @@
 #include "SafetyModule.h"
 
 SafetyModule::SafetyModule()
-    : motor(), sensorLeft(7), sensorRight(6), sensorBack(14), sensorBackFlow(15),
-      ultrasonic(28, 26), leftEnc(18), rightEnc(19)
+    : motor(), sensorLeft(36), sensorRight(38), sensorBack(14), sensorBackFlow(15),
+      ultrasonic(28, 3), leftEnc(18), rightEnc(19)
 {
     leftEnc.begin();
     rightEnc.begin();
@@ -22,6 +22,7 @@ void SafetyModule::process(const MovementRequest &req)
     motor.execute(req);
 }
 
+void SafetyModule::TriggerUltrasonic(){ultrasonic.Trigger();}
 float SafetyModule::GetDistance() {return ultrasonic.getDistance();}
 
 void SafetyModule::reset()

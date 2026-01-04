@@ -1,10 +1,10 @@
 #pragma once
 #include "MovementRequest.h"
 
-#define A1A 2
-#define A1B 3
-#define B1A 4
-#define B1B 5
+#define A1A 4
+#define A1B 5
+#define B1A 6
+#define B1B 7
 #define SPEED 150
 #define MAX_CORR 30
 
@@ -30,7 +30,7 @@ public:
     void right(int Left, int Right);
     
     int corrLeft = 0;
-    int corrRight = 0;
+    int corrRight = 5;
 private:
     
 
