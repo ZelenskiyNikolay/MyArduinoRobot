@@ -22,8 +22,8 @@ void SafetyModule::process(const MovementRequest &req)
     motor.execute(req);
 }
 
-void SafetyModule::TriggerUltrasonic(){ultrasonic.Trigger();}
-float SafetyModule::GetDistance() {return ultrasonic.getDistance();}
+void SafetyModule::TriggerUltrasonic() { ultrasonic.Trigger(); }
+float SafetyModule::GetDistance() { return ultrasonic.getDistance(); }
 
 void SafetyModule::reset()
 {
@@ -34,7 +34,7 @@ void SafetyModule::reset()
     corection = false;
     sensorTrigger = SafetyTriger::NONE;
     motor.stop();
-    bool b = CheckSensors();
+    CheckSensors();
 }
 
 void SafetyModule::startRequest(const MovementRequest &req)
@@ -53,6 +53,9 @@ void SafetyModule::startRequest(const MovementRequest &req)
     {
     case MoveType::Forward:
         motor.forward();
+        break;
+    case MoveType::ForwardSteeps:
+        ResetStips();
         break;
     case MoveType::Backward:
         motor.backward();
@@ -78,7 +81,7 @@ void SafetyModule::STOP_MOTORS()
     motor.stop();
 }
 
-long SafetyModule::GetTics(bool left = true)
+long SafetyModule::GetTics(bool left)
 {
     if (left)
     {
@@ -89,7 +92,7 @@ long SafetyModule::GetTics(bool left = true)
         return rightEnc.GetSensorState();
     }
 }
-int SafetyModule::GetCorrections(bool left = true)
+int SafetyModule::GetCorrections(bool left)
 {
     if (left)
     {
@@ -154,6 +157,10 @@ int SafetyModule::update(float dt)
         {
             return Turn90Left();
         }
+        if (current.type == MoveType::ForwardSteeps)
+        {
+            return ForwardSteeps();
+        }
         timer -= dt;
         if (timer < 0)
         {
@@ -173,6 +180,10 @@ int SafetyModule::update(float dt)
     elapsed += dt;
     if (elapsed >= current.time)
     {
+        // if (!alignActive)
+        //     StartFinalAlign();
+        // if (FinalAlign() == -1)
+        //     return -1;
         if (corection)
             corection = false;
         motor.stop();
@@ -181,6 +192,88 @@ int SafetyModule::update(float dt)
         return 1; // завершено по времени
     }
     return -1; // еще выполняется
+}
+void SafetyModule::StartFinalAlign()
+{
+    alignActive = true;
+
+    alignLeftStart = GetTics(true);
+    alignRightStart = GetTics(false);
+
+    if (alignLeftStart < alignRightStart)
+    {
+        alignWheel = LEFT;
+        alignTarget = alignRightStart - alignLeftStart;
+    }
+    else
+    {
+        alignWheel = RIGHT;
+        alignTarget = alignLeftStart - alignRightStart;
+    }
+}
+int SafetyModule::FinalAlign()
+{
+    if (!alignActive)
+    {
+        motor.stop();
+        return 1;
+    }
+
+    const int alignSpeed = 150;
+
+    int delta;
+
+    if (alignWheel == LEFT)
+    {
+        delta = GetTics(true) - alignLeftStart;
+        motor.forward(alignSpeed, 0);
+    }
+    else
+    {
+        delta = GetTics(false) - alignRightStart;
+        motor.forward(0, alignSpeed);
+    }
+
+    if (delta >= alignTarget)
+    {
+        motor.stop();
+        alignActive = false;
+        return 1;
+    }
+
+    return -1;
+} 
+
+int SafetyModule::Forward(int Left, int Right)
+{
+    SteepsLeft = Left;
+    SteepsRight = Right;
+    startRequest(MovementRequest(MoveType::ForwardSteeps, 100));
+}
+int SafetyModule::ForwardSteeps(){
+    if (GetTics() >= SteepsLeft) 
+    {
+        motor.stopLeft();
+    }
+    if (GetTics() < SteepsLeft)
+    {
+        motor.forwardLeft();
+    }
+    if (GetTics(false) >= SteepsRight)
+    {
+        motor.stopRight();
+    }
+    if (GetTics(false) < SteepsRight)
+    {
+        motor.forwardRight();
+    }
+    if (GetTics() >= SteepsLeft && GetTics(false) >= SteepsRight)
+    {
+        motor.stop();
+        active = false;
+        return 1; // завершено
+    }
+    return -1;
 }
 int SafetyModule::Turn90Left()
 {

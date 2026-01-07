@@ -16,6 +16,11 @@ enum SafetyTriger
     SENSOR_BACK_FLOW,
     MENY_SENSORS
 };
+enum Wheel
+{
+    LEFT,
+    RIGHT
+};
 
 class SafetyModule
 {
@@ -58,9 +63,15 @@ public:
     void ResetCorrections();
     void CorrectMove();
     int Turn90Left();
-    
+
     float GetDistance();
     void TriggerUltrasonic();
+
+    int FinalAlign();
+    void StartFinalAlign();
+
+    int Forward(int Left, int Right);
+    int ForwardSteeps();
 private:
     void process(const MovementRequest &req);
 
@@ -68,4 +79,11 @@ private:
     bool CheckSensors();
     SafetyTriger sensorTrigger = SafetyTriger::NONE;
     bool corection = false;
+    int alignTarget = 0;
+    bool alignActive = false;
+    int alignLeftStart;
+    int alignRightStart;
+    int alignWheel;
+    int SteepsLeft;
+    int SteepsRight;
 };

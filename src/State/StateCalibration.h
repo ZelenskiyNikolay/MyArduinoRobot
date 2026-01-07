@@ -10,6 +10,7 @@
 #include "Move/MovementModule.h"
 #include "Settings/GlobalSettings.h"
 #include "Move/SafetyModule.h"
+#include "Sensors/IRSensor.h"
 
 class StateCalibration : public State {
 public:
@@ -45,5 +46,6 @@ private:
     Sprite spriteOld;
     SpriteOled sprite;
     Sound sound;
+    IRSensor ir;
     float blinkTimer = 3000;
 };

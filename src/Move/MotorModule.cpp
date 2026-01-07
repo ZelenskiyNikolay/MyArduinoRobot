@@ -36,6 +36,9 @@ void MotorModule::execute(const MovementRequest &req)
     case MoveType::Stop:
         stop();
         break;
+
+    case MoveType::Left90:
+        break;
     }
 }
 void MotorModule::forward()
@@ -52,7 +55,16 @@ void MotorModule::forward(int Left, int Right)
     analogWrite(B1A, corrRight + Right);
     analogWrite(B1B, 0);
 }
-
+void MotorModule::forwardLeft()
+{
+    analogWrite(A1A, SPEED);
+    analogWrite(A1B, 0);
+}
+void MotorModule::forwardRight()
+{
+    analogWrite(B1A, SPEED);
+    analogWrite(B1B, 0);
+}
 void MotorModule::backward()
 {
     digitalWrite(A1A, LOW);
@@ -76,13 +88,6 @@ void MotorModule::left()
     analogWrite(B1A, SPEED + corrRight);
     digitalWrite(B1B, LOW);
 }
-void MotorModule::left(int Left, int Right)
-{
-    digitalWrite(A1A, LOW);
-    analogWrite(A1B, SPEED + corrLeft + Left);
-    analogWrite(B1A, SPEED + corrRight + Right);
-    digitalWrite(B1B, LOW);
-}
 
 void MotorModule::right()
 {
@@ -91,18 +96,21 @@ void MotorModule::right()
     digitalWrite(B1A, LOW);
     analogWrite(B1B, SPEED + corrRight);
 }
-void MotorModule::right(int Left, int Right)
-{
-    analogWrite(A1A, SPEED + corrLeft + Left);
-    digitalWrite(A1B, LOW);
-    digitalWrite(B1A, LOW);
-    analogWrite(B1B, SPEED + corrRight + Right);
-}
 
 void MotorModule::stop()
 {
     analogWrite(A1A, 0);
     analogWrite(A1B, 0);
+    analogWrite(B1A, 0);
+    analogWrite(B1B, 0);
+}
+void MotorModule::stopLeft()
+{
+    analogWrite(A1A, 0);
+    analogWrite(A1B, 0);
+}
+void MotorModule::stopRight()
+{
     analogWrite(B1A, 0);
     analogWrite(B1B, 0);
 }

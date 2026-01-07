@@ -26,11 +26,17 @@ public:
 
     void forward(int Left, int Right);
     void backward(int Left, int Right);
-    void left(int Left, int Right);
-    void right(int Left, int Right);
-    
+
+    void stopLeft();
+    void stopRight();
+
+    void forwardLeft();
+    void forwardRight();
+    void backwardRight();
+    void backwardLeft();
+
     int corrLeft = 0;
-    int corrRight = 5;
+    int corrRight = 3;
 private:
     
 

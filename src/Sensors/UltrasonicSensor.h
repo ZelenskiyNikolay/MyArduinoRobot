@@ -4,8 +4,8 @@
 class UltrasonicModule {
 private:
 
-    int trigPin;
-    int echoPin;
+    uint8_t trigPin;
+    uint8_t echoPin;
 
 public:
     static volatile unsigned long echoStart;
