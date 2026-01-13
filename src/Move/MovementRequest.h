@@ -9,7 +9,8 @@ enum class MoveType
     Left = 2,
     Right = 3,
     Left90 = 4,
-    ForwardSteeps = 5
+    Right90 = 5,
+    ForwardSteeps = 6
 };
 
 struct MovementRequest

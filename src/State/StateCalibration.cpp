@@ -3,7 +3,6 @@
 #include "Move/SafetyModule.h"
 #include "Module/SDModule.h"
 
-
 StateCalibration::StateCalibration(DisplayOled &disp)
     : display(&disp), sprite(&disp), sound(12), ir(A7)
 {
@@ -54,19 +53,31 @@ void StateCalibration::update(float dt)
     ButtonIR tmp = ir.GetSensorState();
     switch (tmp)
     {
+    case Button1:
+        SafetyModule::getInstance().startRequest(MovementRequest(MoveType::Left90, 10));
+        break;
     case Button2:
         SafetyModule::getInstance().startRequest(MovementRequest(MoveType::Forward, 1000));
         break;
-
+    case Button3:
+        SafetyModule::getInstance().startRequest(MovementRequest(MoveType::Right90, 10));
+        break;
     case Button4:
         SafetyModule::getInstance().Forward(0, 2);
         break;
 
-    case Button6: 
+    case Button6:
         SafetyModule::getInstance().Forward(2, 0);
         break;
-    
-    default : break;
+    case Button8:
+        SafetyModule::getInstance().startRequest(MovementRequest(MoveType::Backward, 1000));
+        break;   
+    case Button0:
+        SafetyModule::getInstance().TriggerUltrasonic();
+        break;
+
+    default:
+        break;
     }
 
     float temp = SafetyModule::getInstance().GetDistance();
@@ -86,7 +97,7 @@ void StateCalibration::Draw(float dt)
         display->clear();
         display->drawText("Calibration:", 0, 0, 1);
         char buffer[16];
-        sprintf(buffer, "Left: %d",(int)SafetyModule::getInstance().GetTics(true));
+        sprintf(buffer, "Left: %d", (int)SafetyModule::getInstance().GetTics(true));
         display->drawText(buffer, 0, 20, 1);
         sprintf(buffer, "Right: %d", SafetyModule::getInstance().GetTics(false));
         display->drawText(buffer, 0, 30, 1);
