@@ -69,6 +69,9 @@ void SafetyModule::startRequest(const MovementRequest &req)
     case MoveType::Right:
         motor.right();
         break;
+    case MoveType::Right90:
+        ResetStips();
+        break;
     case MoveType::Stop:
         motor.stop();
         break;
@@ -156,6 +159,10 @@ int SafetyModule::update(float dt)
         if (current.type == MoveType::Left90)
         {
             return Turn90Left();
+        }
+        if (current.type == MoveType::Right90)
+        {
+            return Turn90Right();
         }
         if (current.type == MoveType::ForwardSteeps)
         {
@@ -284,6 +291,17 @@ int SafetyModule::Turn90Left()
         return 1; // завершено
     }
     motor.left(); // правое вперёд, левое назад
+    return -1;    // ещё крутится
+}
+int SafetyModule::Turn90Right()
+{
+    if (GetTics(false) >= ticks90)
+    {
+        motor.stop();
+        active = false;
+        return 1; // завершено
+    }
+    motor.right(); // правое вперёд, левое назад
     return -1;    // ещё крутится
 }
 void SafetyModule::CorrectMove()

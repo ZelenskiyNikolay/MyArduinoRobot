@@ -5,7 +5,7 @@
 #include "Sensors/UltrasonicSensor.h"
 #include "Sensors/RPM_sensor.h"
 
-#define ticks90 25
+#define ticks90 18
 
 enum SafetyTriger
 {
@@ -63,6 +63,7 @@ public:
     void ResetCorrections();
     void CorrectMove();
     int Turn90Left();
+    int Turn90Right();
 
     float GetDistance();
     void TriggerUltrasonic();
