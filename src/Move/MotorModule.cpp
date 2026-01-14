@@ -72,7 +72,16 @@ void MotorModule::backward()
     digitalWrite(B1A, LOW);
     analogWrite(B1B, SPEED + corrRight);
 }
-
+void MotorModule::backwardLeft()
+{
+    analogWrite(A1A, 0);
+    analogWrite(A1B, SPEED);
+}
+void MotorModule::backwardRight()
+{
+    analogWrite(B1A, 0);
+    analogWrite(B1B, SPEED);
+}
 void MotorModule::backward(int Left, int Right)
 {
     digitalWrite(A1A, LOW);

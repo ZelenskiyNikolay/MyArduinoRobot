@@ -5,7 +5,8 @@
 #include "Sensors/UltrasonicSensor.h"
 #include "Sensors/RPM_sensor.h"
 
-#define ticks90 18
+#define ticks90Left 18
+#define ticks90Right 20
 
 enum SafetyTriger
 {

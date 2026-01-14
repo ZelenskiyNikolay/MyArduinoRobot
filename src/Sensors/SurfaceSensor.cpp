@@ -10,7 +10,7 @@ SurfaceSensor::SurfaceSensor(int pin) : SensorPin(pin)
 
 void SurfaceSensor::update()
 {
-    bool motion = digitalRead(SensorPin);
+    bool motion = (bool)digitalRead(SensorPin);
 }
 bool SurfaceSensor::GetSensorState()
 {

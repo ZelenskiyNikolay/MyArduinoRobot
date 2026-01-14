@@ -187,10 +187,10 @@ int SafetyModule::update(float dt)
     elapsed += dt;
     if (elapsed >= current.time)
     {
-        // if (!alignActive)
-        //     StartFinalAlign();
-        // if (FinalAlign() == -1)
-        //     return -1;
+        if (current.type == MoveType::Forward)
+            StartFinalAlign();
+        if (FinalAlign() == -1 && current.type == MoveType::Forward)
+            return -1;
         if (corection)
             corection = false;
         motor.stop();
@@ -202,20 +202,29 @@ int SafetyModule::update(float dt)
 }
 void SafetyModule::StartFinalAlign()
 {
+    motor.stop();
     alignActive = true;
 
     alignLeftStart = GetTics(true);
     alignRightStart = GetTics(false);
 
-    if (alignLeftStart < alignRightStart)
+    alignTarget = alignRightStart - alignLeftStart;
+
+    if (abs(alignTarget) >= 2)
     {
-        alignWheel = LEFT;
-        alignTarget = alignRightStart - alignLeftStart;
+        alignTarget = abs(alignRightStart - alignLeftStart);
+        if (alignLeftStart < alignRightStart)
+        {
+            alignWheel = LEFT;
+        }
+        else
+        {
+            alignWheel = RIGHT;
+        }
     }
     else
     {
-        alignWheel = RIGHT;
-        alignTarget = alignLeftStart - alignRightStart;
+        alignActive = false;
     }
 }
 int SafetyModule::FinalAlign()
@@ -232,24 +241,27 @@ int SafetyModule::FinalAlign()
 
     if (alignWheel == LEFT)
     {
-        delta = GetTics(true) - alignLeftStart;
-        motor.forward(alignSpeed, 0);
+        if (GetTics() >= alignTarget) //&& GetTics(false) >= ticks90)
+        {
+            motor.stop();
+            active = false;
+            return 1; // завершено
+        }
+        motor.left(); // правое вперёд, левое назад
+        return -1;    // ещё крутится
     }
     else
     {
-        delta = GetTics(false) - alignRightStart;
-        motor.forward(0, alignSpeed);
+        if (GetTics(false) >= alignTarget)
+        {
+            motor.stop();
+            active = false;
+            return 1; // завершено
+        }
+        motor.right(); // правое вперёд, левое назад
+        return -1;     // ещё крутится
     }
-
-    if (delta >= alignTarget)
-    {
-        motor.stop();
-        alignActive = false;
-        return 1;
-    }
-
-    return -1;
-} 
+}
 
 int SafetyModule::Forward(int Left, int Right)
 {
@@ -257,8 +269,9 @@ int SafetyModule::Forward(int Left, int Right)
     SteepsRight = Right;
     startRequest(MovementRequest(MoveType::ForwardSteeps, 100));
 }
-int SafetyModule::ForwardSteeps(){
-    if (GetTics() >= SteepsLeft) 
+int SafetyModule::ForwardSteeps()
+{
+    if (GetTics() >= SteepsLeft)
     {
         motor.stopLeft();
     }
@@ -284,7 +297,7 @@ int SafetyModule::ForwardSteeps(){
 }
 int SafetyModule::Turn90Left()
 {
-    if (GetTics() >= ticks90) //&& GetTics(false) >= ticks90)
+    if (GetTics() >= ticks90Left) //&& GetTics(false) >= ticks90)
     {
         motor.stop();
         active = false;
@@ -295,14 +308,14 @@ int SafetyModule::Turn90Left()
 }
 int SafetyModule::Turn90Right()
 {
-    if (GetTics(false) >= ticks90)
+    if (GetTics(false) >= ticks90Right)
     {
         motor.stop();
         active = false;
         return 1; // завершено
     }
     motor.right(); // правое вперёд, левое назад
-    return -1;    // ещё крутится
+    return -1;     // ещё крутится
 }
 void SafetyModule::CorrectMove()
 {

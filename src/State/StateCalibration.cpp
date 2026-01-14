@@ -2,6 +2,7 @@
 #include "Sensors/TouchButtons.h"
 #include "Move/SafetyModule.h"
 #include "Module/SDModule.h"
+#include "Move/SafetyModule2.h"
 
 StateCalibration::StateCalibration(DisplayOled &disp)
     : display(&disp), sprite(&disp), sound(12), ir(A7)
@@ -24,13 +25,14 @@ void StateCalibration::enter()
 }
 void StateCalibration::update(float dt)
 {
-    SafetyModule::getInstance().update(dt);
+    //SafetyModule::getInstance().update(dt);
+    SafetyModule2::getInstance().update();
     ir.update();
 
     if (TouchButtons::getInstance().consume(0))
     {
         SafetyModule::getInstance().ResetStips();
-        SafetyModule::getInstance().startRequest(MovementRequest(MoveType::Forward, 1000));
+        SafetyModule::getInstance().startRequest(MovementRequest(MoveType::Forward, 500));
     }
     if (TouchButtons::getInstance().consume(1))
     {
@@ -57,7 +59,7 @@ void StateCalibration::update(float dt)
         SafetyModule::getInstance().startRequest(MovementRequest(MoveType::Left90, 10));
         break;
     case Button2:
-        SafetyModule::getInstance().startRequest(MovementRequest(MoveType::Forward, 1000));
+        SafetyModule::getInstance().startRequest(MovementRequest(MoveType::Forward, 500));
         break;
     case Button3:
         SafetyModule::getInstance().startRequest(MovementRequest(MoveType::Right90, 10));
@@ -69,8 +71,18 @@ void StateCalibration::update(float dt)
     case Button6:
         SafetyModule::getInstance().Forward(2, 0);
         break;
+
+    case Button5:
+        SafetyModule2::getInstance().NewMov(MotionState::TURN_LEFT90);
+        break;
+    case Button7:
+        SafetyModule2::getInstance().NewMov(MotionState::FORWARD,20,20);
+        break;
+    case Button9:
+        SafetyModule2::getInstance().NewMov(MotionState::BACKWARD,20,20);
+        break;
     case Button8:
-        SafetyModule::getInstance().startRequest(MovementRequest(MoveType::Backward, 1000));
+        SafetyModule::getInstance().startRequest(MovementRequest(MoveType::Backward, 500));
         break;   
     case Button0:
         SafetyModule::getInstance().TriggerUltrasonic();
@@ -99,7 +111,7 @@ void StateCalibration::Draw(float dt)
         char buffer[16];
         sprintf(buffer, "Left: %d", (int)SafetyModule::getInstance().GetTics(true));
         display->drawText(buffer, 0, 20, 1);
-        sprintf(buffer, "Right: %d", SafetyModule::getInstance().GetTics(false));
+        sprintf(buffer, "Right: %d", (int)SafetyModule::getInstance().GetTics(false));
         display->drawText(buffer, 0, 30, 1);
         char buf[5];
         dtostrf(distance, 1, 1, buf);

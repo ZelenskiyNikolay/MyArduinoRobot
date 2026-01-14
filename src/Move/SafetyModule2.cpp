@@ -1,0 +1,85 @@
+#include "SafetyModule2.h"
+
+SafetyModule2::SafetyModule2()
+    : sensorLeft(36), sensorRight(38), sensorBack(14), sensorBackFlow(15),
+      ultrasonic(28, 3), motion()
+{
+    ultrasonic.begin();
+    CheckSensors();
+}
+
+void SafetyModule2::update()
+{
+    if (corection)
+    {
+        CheckSensors();
+        Corection();
+        motion.update();
+        return;
+    }
+    if (CheckSensors())
+    {
+        // завершено аварийно
+        motion.SafatyStop();
+        corection = true;
+    }
+    else
+    {
+        motion.update();
+    }
+}
+void SafetyModule2::Corection()
+{
+    if (motion.isBusy())
+        return;
+
+    switch (sensorTrigger)
+    {
+    case SafetyTriger::SENSOR_LEFT:
+        NewMov(MotionState::BACKWARD, 3, 3);
+        break;
+    case SafetyTriger::SENSOR_RIGHT:
+        NewMov(MotionState::BACKWARD, 3, 3);
+        break;
+    case SafetyTriger::SENSOR_BACK:
+        NewMov(MotionState::FORWARD, 3, 3);
+        break;
+    case SafetyTriger::SENSOR_BACK_FLOW: 
+        NewMov(MotionState::FORWARD, 3, 3);
+        break;
+    case SafetyTriger::NONE:
+        corection = false;
+        break;
+    default:
+        break;
+    }
+}
+
+bool SafetyModule2::CheckSensors()
+{
+    bool Left = sensorLeft.GetSensorState();
+    bool Right = sensorRight.GetSensorState();
+    bool BackFlow = sensorBackFlow.GetSensorState();
+    bool Back = sensorBack.GetSensorState();
+    if(Left && Right && BackFlow && !Back)
+           sensorTrigger = SafetyTriger::NONE; 
+    else if (!Left)
+        sensorTrigger = SafetyTriger::SENSOR_LEFT;
+    else if (!Right)
+        sensorTrigger = SafetyTriger::SENSOR_RIGHT;
+    else if (!BackFlow)
+        sensorTrigger = SafetyTriger::SENSOR_BACK_FLOW;
+    else if (Back)
+        sensorTrigger = SafetyTriger::SENSOR_BACK;
+
+    return (!Left || !Right ||!BackFlow || Back);
+}
+
+bool SafetyModule2::isBusy() const
+{
+    return motion.isBusy();
+}
+void SafetyModule2::NewMov(MotionState Command, int Left, int Right)
+{
+    motion.NewMov(Command, Left, Right);
+}
