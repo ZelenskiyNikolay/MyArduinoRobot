@@ -44,7 +44,7 @@ void SafetyModule2::Corection()
     case SafetyTriger::SENSOR_BACK:
         NewMov(MotionState::FORWARD, 3, 3);
         break;
-    case SafetyTriger::SENSOR_BACK_FLOW: 
+    case SafetyTriger::SENSOR_BACK_FLOW:
         NewMov(MotionState::FORWARD, 3, 3);
         break;
     case SafetyTriger::NONE:
@@ -61,8 +61,8 @@ bool SafetyModule2::CheckSensors()
     bool Right = sensorRight.GetSensorState();
     bool BackFlow = sensorBackFlow.GetSensorState();
     bool Back = sensorBack.GetSensorState();
-    if(Left && Right && BackFlow && !Back)
-           sensorTrigger = SafetyTriger::NONE; 
+    if (Left && Right && BackFlow && !Back)
+        sensorTrigger = SafetyTriger::NONE;
     else if (!Left)
         sensorTrigger = SafetyTriger::SENSOR_LEFT;
     else if (!Right)
@@ -72,7 +72,7 @@ bool SafetyModule2::CheckSensors()
     else if (Back)
         sensorTrigger = SafetyTriger::SENSOR_BACK;
 
-    return (!Left || !Right ||!BackFlow || Back);
+    return (!Left || !Right || !BackFlow || Back);
 }
 
 bool SafetyModule2::isBusy() const
@@ -83,3 +83,4 @@ void SafetyModule2::NewMov(MotionState Command, int Left, int Right)
 {
     motion.NewMov(Command, Left, Right);
 }
+long SafetyModule2::GetTics(bool left) { return motion.GetTics(left); }

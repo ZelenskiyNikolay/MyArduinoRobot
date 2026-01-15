@@ -28,6 +28,7 @@ public:
         static SafetyModule2 instance;
         return instance;
     }
+    long GetTics(bool left=true);
     void update();
     bool isBusy() const;
     void NewMov(MotionState Command, int Left = 0, int Right = 0);

@@ -9,6 +9,8 @@ enum MotionState {
     IDLE,
     FORWARD,
     BACKWARD,
+    TURN_LEFT,
+    TURN_RIGHT,
     TURN_LEFT90,
     TURN_RIGHT90
 };
@@ -38,6 +40,9 @@ private:
     void ForwardMov(long dl,long dr);
     void BackwardMov(long dl, long dr);
     void Turn90Left(long dl);
+    void Turn90Right(long dr);
+    void TurnLeft(long dl, int ticks = 2);
+    void TurnRight(long dr, int ticks = 2);
 public:
     MotionController();
     int update();

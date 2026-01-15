@@ -40,13 +40,29 @@ void MotionController::NewMov(MotionState Command, int Left, int Right)
         command.targetRight = Right;
         command.type = Command;
         break;
-    case MotionState::TURN_LEFT90:
+    case MotionState::TURN_LEFT:
         command.startLeft = GetTics();
         command.startRight = GetTics(false);
         command.targetLeft = Left;
+        command.type = Command;
+        break;
+    case MotionState::TURN_RIGHT:
+        command.startLeft = GetTics();
+        command.startRight = GetTics(false);
         command.targetRight = Right;
         command.type = Command;
         break;
+    case MotionState::TURN_LEFT90:
+        command.startLeft = GetTics();
+        command.startRight = GetTics(false);
+        command.type = Command;
+        break;
+    case MotionState::TURN_RIGHT90:
+        command.startLeft = GetTics();
+        command.startRight = GetTics(false);
+        command.type = Command;
+        break;
+
         // case MotionState::IDLE:
         //     motor.stop();
         // break;
@@ -69,13 +85,57 @@ int MotionController::update()
     case BACKWARD:
         BackwardMov(dl, dr);
         break;
+    case TURN_LEFT:
+        if(command.targetLeft>2)
+            TurnLeft(dl,command.targetLeft);
+        else
+            TurnLeft(dl);
+        break;
+    case TURN_RIGHT:
+        if(command.targetRight>2)
+            TurnRight(dr,command.targetRight);
+        else
+            TurnRight(dr);
+        break;
     case TURN_LEFT90:
         Turn90Left(dl);
+        break;
+    case TURN_RIGHT90:
+        Turn90Right(dr);
         break;
     }
     return -1;
 }
-
+void MotionController::TurnRight(long dr, int ticks)
+{
+    if (dr >= ticks)
+    {
+        motor.stop();
+        command.type = IDLE;
+        return;
+    }
+    motor.right(); // правое вперёд, левое назад
+}
+void MotionController::TurnLeft(long dl, int ticks)
+{
+    if (dl >= ticks)
+    {
+        motor.stop();
+        command.type = IDLE;
+        return;
+    }
+    motor.left(); // правое вперёд, левое назад
+}
+void MotionController::Turn90Right(long dr)
+{
+    if (dr >= ticks90Right)
+    {
+        motor.stop();
+        command.type = IDLE;
+        return;
+    }
+    motor.right(); // правое вперёд, левое назад
+}
 void MotionController::Turn90Left(long dl)
 {
     if (dl >= ticks90Left)

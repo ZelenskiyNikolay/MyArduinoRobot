@@ -56,33 +56,22 @@ void StateCalibration::update(float dt)
     switch (tmp)
     {
     case Button1:
-        SafetyModule::getInstance().startRequest(MovementRequest(MoveType::Left90, 10));
+        SafetyModule2::getInstance().NewMov(MotionState::TURN_LEFT,0,0);
         break;
     case Button2:
-        SafetyModule::getInstance().startRequest(MovementRequest(MoveType::Forward, 500));
-        break;
-    case Button3:
-        SafetyModule::getInstance().startRequest(MovementRequest(MoveType::Right90, 10));
-        break;
-    case Button4:
-        SafetyModule::getInstance().Forward(0, 2);
-        break;
-
-    case Button6:
-        SafetyModule::getInstance().Forward(2, 0);
-        break;
-
-    case Button5:
-        SafetyModule2::getInstance().NewMov(MotionState::TURN_LEFT90);
-        break;
-    case Button7:
         SafetyModule2::getInstance().NewMov(MotionState::FORWARD,20,20);
         break;
-    case Button9:
-        SafetyModule2::getInstance().NewMov(MotionState::BACKWARD,20,20);
+    case Button3:
+        SafetyModule2::getInstance().NewMov(MotionState::TURN_RIGHT,0,0);
+        break;
+    case Button4:
+        SafetyModule2::getInstance().NewMov(MotionState::TURN_LEFT90);
+        break;
+    case Button6:
+        SafetyModule2::getInstance().NewMov(MotionState::TURN_RIGHT90);
         break;
     case Button8:
-        SafetyModule::getInstance().startRequest(MovementRequest(MoveType::Backward, 500));
+        SafetyModule2::getInstance().NewMov(MotionState::BACKWARD,20,20);
         break;   
     case Button0:
         SafetyModule::getInstance().TriggerUltrasonic();
@@ -109,13 +98,11 @@ void StateCalibration::Draw(float dt)
         display->clear();
         display->drawText("Calibration:", 0, 0, 1);
         char buffer[16];
-        sprintf(buffer, "Left: %d", (int)SafetyModule::getInstance().GetTics(true));
+        sprintf(buffer, "Left: %d", (int)SafetyModule2::getInstance().GetTics(true));
         display->drawText(buffer, 0, 20, 1);
-        sprintf(buffer, "Right: %d", (int)SafetyModule::getInstance().GetTics(false));
+        sprintf(buffer, "Right: %d", (int)SafetyModule2::getInstance().GetTics(false));
         display->drawText(buffer, 0, 30, 1);
-        char buf[5];
-        dtostrf(distance, 1, 1, buf);
-        sprintf(buffer, "Dis: %s cm", buf);
+        sprintf(buffer, "Dis: %d cm", (int)distance);
         display->drawText(buffer, 0, 40, 1);
 
         timer = 500;
