@@ -72,7 +72,7 @@ StateCommand StateNormal::handleEvent(Event e)
       if (_time.hour() > 22 || _time.hour() < 6)
       {
         //MovementModule::getInstance().stop();
-        return CMD_TO_SLEEPY;
+        return CMD_NONE;//CMD_TO_SLEEPY;
       }
     }
   if (!IsDrawClock)

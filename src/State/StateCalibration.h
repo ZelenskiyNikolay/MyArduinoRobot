@@ -27,8 +27,12 @@ private:
     float timer;
     float timer1;
 
+    int steep_calibration=0;
+
     DateTime _time;
     
+    void ProcessCalibration(float dt);
+
     bool isDrawingBattery = true;
     void drawBatteryPercent(int x, int y, int percent);
     void drawBatteryIcon(int x, int y, int percent);

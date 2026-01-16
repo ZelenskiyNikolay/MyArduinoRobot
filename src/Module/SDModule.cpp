@@ -13,8 +13,9 @@ void SDModule::begin()
 float SDModule::getFloatConfig(const char *key, float defaultValue)
 {
     File configFile = SD.open("config.txt");
-    if (!configFile){
-        if(CreateConfigFile())
+    if (!configFile)
+    {
+        if (CreateConfigFile())
             return defaultValue;
     }
 
@@ -48,14 +49,39 @@ bool SDModule::CreateConfigFile()
 {
     Serial.println(F("Writing /config.txt ..."));
     File file = SD.open("config.txt", FILE_WRITE);
-  if (file) {
-    file.println("speed: 180");
-    file.println("angle: 90");
-    file.close();
-    Serial.println(F("Create config.txt"));
-    return true;
-  } else {
-    Serial.println(F("Failed to open config.txt for writing!!! "));
-    return false;
-  }
+    if (file)
+    {
+        file.println("speed: 180");
+        file.println("angle: 90");
+        file.close();
+        Serial.println(F("Create config.txt"));
+        return true;
+    }
+    else
+    {
+        Serial.println(F("Failed to open config.txt for writing!!! "));
+        return false;
+    }
+}
+void SDModule::CreateFile(const char *file_name)
+{
+    File file = SD.open(file_name);
+    if (!file) // Проверяем вдруг существует
+    {
+        file = SD.open(file_name, FILE_WRITE);
+        if (file)
+        {
+            file.close();
+            Serial.print("Файл создан: ");
+            Serial.println(file_name);
+            return;
+        }
+    }
+    else
+    {
+        file.close();
+        Serial.print("Файл существует: ");
+        Serial.println(file_name);
+        return;
+    }
 }

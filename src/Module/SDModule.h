@@ -19,7 +19,7 @@ public:
     
     // Метод для получения float
     float getFloatConfig(const char* key, float defaultValue);
-
+    void  CreateFile(const char* file_name);
 private:
     SDModule() {}
     bool CreateConfigFile();

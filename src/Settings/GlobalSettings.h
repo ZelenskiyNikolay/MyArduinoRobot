@@ -1,7 +1,8 @@
 #pragma once
 #include <Arduino.h>
 
-class GlobalSettings{
+class GlobalSettings
+{
 public:
     static GlobalSettings &getInstance()
     {
@@ -10,7 +11,9 @@ public:
     }
     bool NOT_CHENGE_STATE = false;
     bool STATE_START = true;
+    int Distance_X = 0;
+    int Distance_Y = 0;
 
-    private:
-    GlobalSettings(){}
+private:
+    GlobalSettings() {}
 };

@@ -192,5 +192,5 @@ bool MotionController::isBusy() const
 void MotionController::SafatyStop()
 {
     motor.stop();
-    command.type = IDLE;
+    //command.type = IDLE;
 }
