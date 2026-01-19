@@ -1,7 +1,4 @@
-#include <Arduino.h>
-
-#include <avr/wdt.h>
-
+#include "Incledes.h"
 
 void FpsCount(float dt);
 
@@ -14,7 +11,7 @@ float getDeltaTime()
   unsigned long now = millis();
   unsigned long dt = now - lastTime;
   lastTime = now;
-  
+
   return dt;
 }
 
@@ -23,6 +20,21 @@ void setup()
   byte status = MCUSR;
   MCUSR = 0;     // сброс флагов причины ресета
   wdt_disable(); // отключаем WDT сразу
+
+  if (!display.begin(SSD1306_SWITCHCAPVCC))
+  {
+    Serial.begin(9600);
+    Serial.println(F("SSD1306 allocation failed"));
+    for (;;)
+      ;
+  }
+  display.clearDisplay();
+  lastTime = millis();
+  Serial.begin(9600);
+
+  
+  fsm = new FSM(new StateNormal(displaySys), &displaySys);
+
 
   wdt_enable(WDTO_1S); // Запускаем WDT
 }
@@ -33,16 +45,26 @@ void loop()
 
   float dt = getDeltaTime();
 
+  while (EventBus::hasEvents())
+  {
+    fsm->handleEvent(EventBus::poll());
+  }
 
+  // 2. логика состояния
+  fsm->update(dt);
+
+  // 3. отрисовка
+  displaySys.update();
+  
   FpsCount(dt);
-
 }
 
-int freeMemory() {
+int freeMemory()
+{
   char top;
   extern int *__brkval;
   extern int __heap_start;
-  return (int) &top - (__brkval == 0 ? (int) &__heap_start : (int) __brkval);
+  return (int)&top - (__brkval == 0 ? (int)&__heap_start : (int)__brkval);
 }
 
 void FpsCount(float dt)
