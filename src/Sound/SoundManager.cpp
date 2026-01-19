@@ -1,6 +1,8 @@
 #include "SoundManager.h"
 
-
+extern "C" {
+    extern unsigned long toneAC_isPlaying_flag = 0; 
+}
 Sound::Sound(int piezoPin)
 {
     pin = piezoPin;

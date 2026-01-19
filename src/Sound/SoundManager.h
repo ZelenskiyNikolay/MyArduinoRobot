@@ -2,9 +2,7 @@
 #include <Arduino.h>
 #include <toneAC.h>
 
-extern "C" {
-    extern unsigned long toneAC_isPlaying_flag; 
-}
+
 class Sound {
 private:
     int pin;

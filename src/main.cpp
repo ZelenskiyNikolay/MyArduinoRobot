@@ -32,9 +32,11 @@ void setup()
   lastTime = millis();
   Serial.begin(9600);
 
+  TouchButtons::getInstance().begin();
   
-  fsm = new FSM(new StateNormal(displaySys), &displaySys);
+  fsm = new FSM(new StateStart(displaySys), &displaySys);
 
+  BatteryModule::getInstance().begin(A0);
 
   wdt_enable(WDTO_1S); // Запускаем WDT
 }
@@ -44,6 +46,8 @@ void loop()
   wdt_reset(); // Защита от зависаний Watchdog
 
   float dt = getDeltaTime();
+
+  TouchButtons::getInstance().update();
 
   while (EventBus::hasEvents())
   {
@@ -56,6 +60,8 @@ void loop()
   // 3. отрисовка
   displaySys.update();
   
+  BatteryModule::getInstance().update(dt);
+
   FpsCount(dt);
 }
 

@@ -2,7 +2,7 @@
 #include <Arduino.h>
 #include <avr/wdt.h>
 #include "Core/FSM.h"
-
+#include "State/StateStart.h"
 
 #define SCREEN_WIDTH 128
 #define SCREEN_HEIGHT 64
