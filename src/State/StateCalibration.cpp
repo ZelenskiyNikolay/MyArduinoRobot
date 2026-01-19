@@ -118,11 +118,13 @@ void StateCalibration::ProcessCalibration(float dt)
         {
             SafetyModule2::getInstance().NewMov(MotionState::BACKWARD, 3, 3);
             steep_calibration++;
+            timer1 = 500;
             return;
         }
     }
     if (steep_calibration == 3)
     {
+        timer1 -= dt;
         if (timer1 < 0 && !SafetyModule2::getInstance().isBusy())
         {
             SafetyModule2::getInstance().NewMov(MotionState::TURN_LEFT90);
@@ -151,15 +153,20 @@ void StateCalibration::ProcessCalibration(float dt)
             {
                 GlobalSettings::getInstance().Distance_X = distance;
                 steep_calibration++;
+                timer1 = 500;
                 return;
             }
         }
     }
     if (steep_calibration == 6)
     {
-        SafetyModule2::getInstance().NewMov(MotionState::TURN_LEFT90);
-        steep_calibration++;
-        return;
+        timer1 -= dt;
+        if (timer1 < 0 && !SafetyModule2::getInstance().isBusy())
+        {
+            SafetyModule2::getInstance().NewMov(MotionState::TURN_LEFT90);
+            steep_calibration++;
+            return;
+        }
     }
 
     if (steep_calibration == 7)
@@ -194,7 +201,7 @@ void StateCalibration::ProcessCalibration(float dt)
         timer1 -= dt;
         if (timer1 < 0)
         {
-            //EventBus::push({EVENT_CHANGE_STATE, STATE_NORMAL});
+            // EventBus::push({EVENT_CHANGE_STATE, STATE_NORMAL});
         }
     }
 }
