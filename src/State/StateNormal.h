@@ -7,6 +7,9 @@
 //#include <RTClib.h>
 //#include "Move/MovementModule.h"
 //#include "Settings/GlobalSettings.h"
+// #include "Module/RTCModule.h"
+// #include "Module/BatteryModule.h"
+// #include "Sensors/TouchButtons.h"
 
 class StateNormal : public State {
 public:

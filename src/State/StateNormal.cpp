@@ -1,8 +1,5 @@
 #include "StateNormal.h"
-// #include "Display/Sprite.h"
-// #include "Module/RTCModule.h"
-// #include "Module/BatteryModule.h"
-// #include "Sensors/TouchButtons.h"
+
 
 StateNormal::StateNormal(DisplayOled &disp)
     : display(&disp), sprite(&disp)//, sound(12)
@@ -17,6 +14,7 @@ void StateNormal::enter()
 }
 void StateNormal::update(float dt)
 {
+  Draw(dt);
   // if (TouchButtons::getInstance().consume(3))
   // {
   //   isDrawingBattery = !isDrawingBattery;
@@ -74,18 +72,14 @@ void StateNormal::Draw(float dt)
   {
     if (timer < 0)
     {
-      Serial.println(isDrawingBattery);
-
       IsOpen = false;
       timer = Close_Eyes;
-      sprite.Draw(Emotions::NORMAL);
 
-      if (isDrawingBattery)
-      {
-        //int precent = BatteryModule::getInstance().getBatteryPercent();
-        // drawBatteryIcon(0, 0, precent);
-        // drawBatteryPercent(110, 0, precent);
-      }
+     // _time = RTCModule::getInstance().getTime();
+      sprite.Draw(Emotions::BLINK);
+      // char buffer[6]; // "HH:MM"
+      // sprintf(buffer, "%02d:%02d", _time.hour(), _time.minute());
+      // display->drawText(buffer, 0, 0, 2);
       return;
     }
   }
@@ -95,18 +89,53 @@ void StateNormal::Draw(float dt)
     {
       IsOpen = true;
       timer = Open_Eyes;
-      sprite.Draw(Emotions::SLEEPY);
 
-      if (isDrawingBattery)
-      {
-        //int precent = BatteryModule::getInstance().getBatteryPercent();
-        // drawBatteryPercent(110, 0, precent);
-        // drawBatteryIcon(0, 0, precent);
-      }
+      sprite.Draw(Emotions::SLEEPY);
       return;
     }
   }
 }
+
+// void StateNormal::Draw(float dt)
+// {
+//   timer -= dt;
+//   if (IsOpen)
+//   {
+//     if (timer < 0)
+//     {
+//       Serial.println(isDrawingBattery);
+
+//       IsOpen = false;
+//       timer = Close_Eyes;
+//       sprite.Draw(Emotions::NORMAL);
+
+//       if (isDrawingBattery)
+//       {
+//         //int precent = BatteryModule::getInstance().getBatteryPercent();
+//         // drawBatteryIcon(0, 0, precent);
+//         // drawBatteryPercent(110, 0, precent);
+//       }
+//       return;
+//     }
+//   }
+//   else
+//   {
+//     if (timer < 0)
+//     {
+//       IsOpen = true;
+//       timer = Open_Eyes;
+//       sprite.Draw(Emotions::SLEEPY);
+
+//       if (isDrawingBattery)
+//       {
+//         //int precent = BatteryModule::getInstance().getBatteryPercent();
+//         // drawBatteryPercent(110, 0, precent);
+//         // drawBatteryIcon(0, 0, precent);
+//       }
+//       return;
+//     }
+//   }
+// }
 
 void StateNormal::drawBatteryIcon(int x, int y, int percent)
 {
