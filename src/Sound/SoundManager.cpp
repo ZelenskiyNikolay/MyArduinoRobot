@@ -1,8 +1,5 @@
 #include "SoundManager.h"
 
-extern "C" {
-    extern unsigned long toneAC_isPlaying_flag = 0; 
-}
 Sound::Sound(int piezoPin)
 {
     pin = piezoPin;
@@ -23,12 +20,9 @@ void Sound::Update(float dt)
         timer -= dt;
         if (timer < 0)
         {
-            if (toneAC_isPlaying_flag)
-            {
-                toneAC(random(600, 1600), _volume, random(20, 80), true);
-                timer = random(10, 80);
-                longSound--;
-            }
+            toneAC(random(600, 1600), _volume, random(20, 80), true);
+            timer = random(10, 80);
+            longSound--;
         }
     }
     else
