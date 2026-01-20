@@ -12,6 +12,7 @@ private:
     int steep = 0;
     bool steepReady = true;
     bool ERROR_MOVE = false;
+    float timer = 0;
 public:
     static MovementModule &getInstance()
     {
