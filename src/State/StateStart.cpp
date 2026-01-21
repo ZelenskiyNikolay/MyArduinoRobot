@@ -67,7 +67,6 @@ void StateStart::Draw(float dt)
 void StateStart::DrawLabel()
 {
     display->clear();
-    timer = 0;
 
     display->drawText("  ROBIK", 0, 0, 2);
     display->drawText("              v1.1", 0, 20, 1);
