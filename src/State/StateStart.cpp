@@ -12,8 +12,8 @@ void StateStart::enter()
     timer = 0;
 
     display->drawText("  ROBIK", 0, 0, 2);
-    display->drawText("              v1.1", 0, 20, 1);
-    display->drawText("press 2 Battary %", 0, 45, 1);
+    display->drawText("              v1.2b", 0, 20, 1);
+    display->drawText("press 3 Battary %", 0, 45, 1);
     display->drawText("press 1 to start.", 0, 55, 1);
 
     num_menu = false;
@@ -69,8 +69,8 @@ void StateStart::DrawLabel()
     display->clear();
 
     display->drawText("  ROBIK", 0, 0, 2);
-    display->drawText("              v1.1", 0, 20, 1);
-    display->drawText("press 2 Battary %", 0, 45, 1);
+    display->drawText("              v1.2b", 0, 20, 1);
+    display->drawText("press 3 Battary %", 0, 45, 1);
     display->drawText("press 1 to start.", 0, 55, 1);
 }
 
