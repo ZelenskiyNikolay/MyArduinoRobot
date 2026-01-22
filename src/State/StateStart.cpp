@@ -20,6 +20,27 @@ void StateStart::enter()
 }
 void StateStart::update(float dt)
 {
+    PowerModule &power = PowerModule::getInstance();
+
+    if (power.State == POWER_EXTERNAL && power.Charging == CHARGING)
+    {
+        if (menu != BATARY_CHARGING)
+        {
+            sound.RtDt(2);
+            menu = BATARY_CHARGING;
+            num_menu = true;
+            timer = 0;
+        }
+    }
+    else
+    {
+        if (menu != LABEL)
+        {
+            menu = LABEL;
+            num_menu = false;
+            sound.RtDt(2);
+        }
+    }
 
     if (!num_menu)
     {
@@ -62,6 +83,8 @@ void StateStart::Draw(float dt)
             SensorBat();
         else if (menu == LABEL)
             DrawLabel();
+        else if (menu == BATARY_CHARGING)
+            ChargeBat();
     }
 }
 void StateStart::DrawLabel()
@@ -96,6 +119,25 @@ void StateStart::SensorBat()
 {
 
     display->drawText("BATTERY SENSOR:", 0, 0, 1);
+    char buffer1[16];
+    int percent = BatteryModule::getInstance().getBatteryPercent();
+
+    drawBatteryIcon(0, 10, percent);
+
+    sprintf(buffer1, "Charge:%02d%s", percent, " %");
+    display->drawText(buffer1, 0, 40, 1);
+
+    float v = BatteryModule::getInstance().getVoltage();
+    int whole = v;
+    int fract = (v - whole) * 100;
+
+    sprintf(buffer1, "Voltage:%d.%02d V", whole, fract);
+    display->drawText(buffer1, 0, 50, 1);
+}
+void StateStart::ChargeBat()
+{
+
+    display->drawText("CHARGING BATTERY:", 0, 0, 1);
     char buffer1[16];
     int percent = BatteryModule::getInstance().getBatteryPercent();
 

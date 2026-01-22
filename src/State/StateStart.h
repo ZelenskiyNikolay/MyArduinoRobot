@@ -9,11 +9,13 @@
 #include "Module/BatteryModule.h"
 #include "Settings/GlobalSettings.h"
 #include "Core/EventBus.h"
+#include "Module/PowerModule.h"
 
 enum MenuShow
 {
     LABEL,
-    BATARY
+    BATARY,
+    BATARY_CHARGING
 };
 
 
@@ -29,7 +31,7 @@ private:
     void DrawLabel();
     void SensorBat();
     void drawBatteryIcon(int x, int y, int percent);
-
+    void ChargeBat();
     MenuShow menu = MenuShow::LABEL;
 
 
