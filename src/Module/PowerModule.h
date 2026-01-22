@@ -12,9 +12,9 @@ enum PowerState {
     POWER_EXTERNAL
 };
 enum PowerCHARGING {
-    POWER_NO_UPDATE,
-    POWER_CHARGING,
-    POWER_DONE,
+    NO_UPDATE,
+    CHARGING,
+    CHARGING_DONE,
 };
 
 class PowerModule {
@@ -26,7 +26,7 @@ public:
    void begin();
    void update(float dt); 
    PowerState State = PowerState::POWER_NO_UPDATE;
-   PowerCHARGING Charging = PowerCHARGING::POWER_NO_UPDATE;
+   PowerCHARGING Charging = PowerCHARGING::NO_UPDATE;
 private:
     PowerModule(){};
     void DrawLog(float dt);

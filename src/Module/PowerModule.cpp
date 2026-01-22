@@ -20,6 +20,20 @@ void PowerModule::update(float dt)
     isDone = analogRead(PIN_DONE) > 500;
     powerConect = digitalRead(PIN_5V);
 
+    if (powerConect)
+    {
+        State = PowerState::POWER_EXTERNAL;
+        if (isCharging)
+            Charging = PowerCHARGING::CHARGING;
+        else if (isDone)
+            Charging = PowerCHARGING::CHARGING_DONE;
+    }
+    else
+    {
+        State = PowerState::POWER_BATTERY;
+        Charging = PowerCHARGING::NO_UPDATE;
+    }
+
     DrawLog(dt);
 }
 
