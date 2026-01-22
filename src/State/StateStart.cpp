@@ -34,7 +34,7 @@ void StateStart::update(float dt)
     }
     else
     {
-        if (menu != LABEL)
+        if (menu == BATARY_CHARGING)
         {
             menu = LABEL;
             num_menu = false;

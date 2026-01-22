@@ -16,5 +16,5 @@ private:
     BatteryModule(){}
     uint8_t pin;
     float voltage = 0.0f;
-    unsigned long lastUpdate = 0;
+    unsigned long lastUpdate = 19000;
 };
