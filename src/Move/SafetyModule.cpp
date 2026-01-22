@@ -33,9 +33,6 @@ void SafetyModule::update()
 }
 void SafetyModule::Corection()
 {
-    if (motion.isBusy())
-        return;
-
     switch (sensorTrigger)
     {
     case SafetyTriger::SENSOR_LEFT:
