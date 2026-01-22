@@ -1,3 +1,4 @@
+//"Release v1.1: restored functionality, calibration, safety correction, dance, IR control"
 #include "Incledes.h"
 
 void FpsCount(float dt);
