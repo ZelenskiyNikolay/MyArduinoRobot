@@ -1,5 +1,6 @@
 //"Release v1.1: restored functionality, calibration, safety correction, dance, IR control"
 #include "Incledes.h"
+#include "Module/PowerModule.h"
 
 void FpsCount(float dt);
 
@@ -38,6 +39,7 @@ void setup()
   fsm = new FSM(new StateStart(displaySys), &displaySys);
 
   BatteryModule::getInstance().begin(A0);
+  PowerModule::getInstance().begin();
 
   wdt_enable(WDTO_1S); // Запускаем WDT
 }
@@ -62,6 +64,7 @@ void loop()
   displaySys.update();
   
   BatteryModule::getInstance().update(dt);
+  PowerModule::getInstance().update(dt);
 
   FpsCount(dt);
 }
