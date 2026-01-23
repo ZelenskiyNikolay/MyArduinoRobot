@@ -1,8 +1,8 @@
 #pragma once
 #include <Arduino.h>
 
-#define PIN_CHRG A1
-#define PIN_DONE A2
+#define PIN_CHRG A2
+#define PIN_DONE A1
 #define PIN_5V A3
 #define UPDATE_TIME 100
 

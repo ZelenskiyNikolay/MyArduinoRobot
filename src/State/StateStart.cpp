@@ -21,26 +21,28 @@ void StateStart::enter()
 void StateStart::update(float dt)
 {
     PowerModule &power = PowerModule::getInstance();
+    BatteryModule &bat = BatteryModule::getInstance();
 
-    if (power.State == POWER_EXTERNAL && power.Charging == CHARGING)
-    {
-        if (menu != BATARY_CHARGING)
+    if(bat.getBatteryPercent() < 99)
+        if (power.State == POWER_EXTERNAL && power.Charging == CHARGING)
         {
-            sound.RtDt(2);
-            menu = BATARY_CHARGING;
-            num_menu = true;
-            timer = 0;
+            if (menu != BATARY_CHARGING)
+            {
+                sound.RtDt(2);
+                menu = BATARY_CHARGING;
+                num_menu = true;
+                timer = 0;
+            }
         }
-    }
-    else
-    {
-        if (menu == BATARY_CHARGING)
+        else
         {
-            menu = LABEL;
-            num_menu = false;
-            sound.RtDt(2);
+            if (menu == BATARY_CHARGING)
+            {
+                menu = LABEL;
+                num_menu = false;
+                sound.RtDt(2);
+            }
         }
-    }
 
     if (!num_menu)
     {
