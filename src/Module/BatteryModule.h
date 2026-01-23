@@ -1,5 +1,6 @@
 #pragma once
 #include <Arduino.h>
+#include "Display/DisplayOled.h"
 
 class BatteryModule {
 public:
@@ -12,6 +13,7 @@ public:
     void update(float dt);
     float getVoltage() const;
     int getBatteryPercent();
+    void drawBatteryIcon(DisplayOled &display, int x, int y, int percent);
 private:
     BatteryModule(){}
     uint8_t pin;
