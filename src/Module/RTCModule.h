@@ -5,7 +5,8 @@ class RTCModule {
 private:
     RTC_DS3231 rtc;
     unsigned long lastUpdate;
-    unsigned long updateInterval;
+    float timer = 0;
+    float updateInterval = 500;
     DateTime currentTime;
 
     RTCModule();
@@ -15,7 +16,7 @@ public:
 
     void begin();
     void setUpdateInterval(unsigned long intervalMs);
-    void update();
+    void update(float dt);
     DateTime getTime();
 
     RTCModule(RTCModule const&) = delete;

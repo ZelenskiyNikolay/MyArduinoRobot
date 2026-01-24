@@ -195,7 +195,7 @@ void StateCalibration::Draw(float dt)
     {
         display->clear();
         display->drawText("Calibration:", 0, 0, 1);
-        char buffer[16];
+        char buffer[32];
         sprintf(buffer, "Left: %d", (int)SafetyModule::getInstance().GetTics(true));
         display->drawText(buffer, 0, 15, 1);
         sprintf(buffer, "Right: %d", (int)SafetyModule::getInstance().GetTics(false));

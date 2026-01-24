@@ -4,6 +4,8 @@
 #include "Core/FSM.h"
 #include "State/StateStart.h"
 #include "Module/PowerModule.h"
+#include "Module/RTCModule.h"
+#include <RTClib.h>
 
 #define SCREEN_WIDTH 128
 #define SCREEN_HEIGHT 64

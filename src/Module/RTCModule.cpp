@@ -30,9 +30,9 @@ void RTCModule::begin()
     currentTime = rtc.now();
     Serial.print("Текущее время: ");
     Serial.println(currentTime.timestamp());
-
-    //Установка часов
-    // rtc.adjust(DateTime(F(__DATE__), F(__TIME__)));
+    lastUpdate = millis();
+    // Установка часов
+    //  rtc.adjust(DateTime(F(__DATE__), F(__TIME__)));
 }
 
 void RTCModule::setUpdateInterval(unsigned long intervalMs)
@@ -40,13 +40,13 @@ void RTCModule::setUpdateInterval(unsigned long intervalMs)
     updateInterval = intervalMs;
 }
 
-void RTCModule::update()
+void RTCModule::update(float dt)
 {
-    unsigned long now = millis();
-    if (now - lastUpdate >= updateInterval)
+    timer -= dt;
+    if (timer < 0)
     {
+        timer = updateInterval;
         currentTime = rtc.now();
-        lastUpdate = now;
     }
 }
 

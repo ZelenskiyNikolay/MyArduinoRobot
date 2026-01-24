@@ -2,6 +2,7 @@
 #include <Arduino.h>
 #include "Sensors/LightSensor.h"
 #include "Sensors/SoundSensor.h"
+#define UPDATETIME 100
 
 class GlobalSensorsModule {
 public:
@@ -12,11 +13,12 @@ public:
 
     void begin();
     void update(float dt);
-    float getVoltage() const;
-    int getBatteryPercent();
+    bool GetLightSensor();
+    bool GetSoundSensor();
 private:
     GlobalSensorsModule();
     uint8_t pin;
+    float timer;
 
     LightSensor light;
     SoundSensor sound;

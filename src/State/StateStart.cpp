@@ -50,6 +50,7 @@ void StateStart::update(float dt)
         {
 
             EventBus::push({EVENT_CHANGE_STATE, STATE_CALIBRATION});
+            //EventBus::push({EVENT_CHANGE_STATE, STATE_NORMAL});
         }
 
         if (TouchButtons::getInstance().consume(2))
@@ -58,6 +59,10 @@ void StateStart::update(float dt)
             menu = BATARY;
             num_menu = true;
             timer = 0;
+        }
+        if (TouchButtons::getInstance().consume(3))
+        {
+            menu = Time;
         }
     }
     else if (num_menu)
@@ -87,6 +92,8 @@ void StateStart::Draw(float dt)
             DrawLabel();
         else if (menu == BATARY_CHARGING)
             ChargeBat();
+        else if (menu == Time)
+            DrawClock(dt);
     }
 }
 void StateStart::DrawLabel()
@@ -98,25 +105,6 @@ void StateStart::DrawLabel()
     display->drawText("press 3 Battary %", 0, 45, 1);
     display->drawText("press 1 to start.", 0, 55, 1);
 }
-
-void StateStart::drawBatteryIcon(int x, int y, int percent)
-{
-    // Размеры батареи
-    const int bodyWidth = 96;
-    const int bodyHeight = 20;
-
-    // Корпус
-    display->drawRect(x, y, bodyWidth, bodyHeight, WHITE);
-
-    // Клемма справа
-    display->fillRect(x + bodyWidth, y + 3, 2, bodyHeight - 6, WHITE);
-
-    // Заполнение (внутри 22×8)
-    percent = constrain(percent, 0, 100);
-    int fillWidth = map(percent, 0, 100, 0, bodyWidth - 2);
-
-    display->fillRect(x + 1, y + 1, fillWidth, bodyHeight - 2, WHITE);
-}
 void StateStart::SensorBat()
 {
 
@@ -124,7 +112,7 @@ void StateStart::SensorBat()
     char buffer1[16];
     int percent = BatteryModule::getInstance().getBatteryPercent();
 
-    drawBatteryIcon(0, 10, percent);
+    BatteryModule::getInstance().drawBatteryIcon(*display, 0, 10, percent);
 
     sprintf(buffer1, "Charge:%02d%s", percent, " %");
     display->drawText(buffer1, 0, 40, 1);
@@ -143,7 +131,7 @@ void StateStart::ChargeBat()
     char buffer1[16];
     int percent = BatteryModule::getInstance().getBatteryPercent();
 
-    drawBatteryIcon(0, 10, percent);
+    BatteryModule::getInstance().drawBatteryIcon(*display, 0, 10, percent);
 
     sprintf(buffer1, "Charge:%02d%s", percent, " %");
     display->drawText(buffer1, 0, 40, 1);
@@ -154,4 +142,22 @@ void StateStart::ChargeBat()
 
     sprintf(buffer1, "Voltage:%d.%02d V", whole, fract);
     display->drawText(buffer1, 0, 50, 1);
+}
+
+void StateStart::DrawClock(float dt)
+{
+
+    display->clear();
+
+    _time = RTCModule::getInstance().getTime();
+    char buffer[9]; // "HH:MM"
+    sprintf(buffer, "%02d:%02d", _time.hour(), _time.minute());
+
+    Serial.print("RTC cached: ");
+    Serial.print(_time.hour());
+    Serial.print(":");
+    Serial.println(_time.minute());
+
+    display->drawText(buffer, 0, 0, 4);
+
 }

@@ -15,7 +15,8 @@ enum MenuShow
 {
     LABEL,
     BATARY,
-    BATARY_CHARGING
+    BATARY_CHARGING,
+    Time
 };
 
 
@@ -30,8 +31,8 @@ public:
 private:
     void DrawLabel();
     void SensorBat();
-    void drawBatteryIcon(int x, int y, int percent);
     void ChargeBat();
+    void DrawClock(float dt);
     MenuShow menu = MenuShow::LABEL;
 
 

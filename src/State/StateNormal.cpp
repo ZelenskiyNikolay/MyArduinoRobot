@@ -10,6 +10,7 @@ void StateNormal::enter()
   display->clear();
   timer = 0;
   isDrawingBattery = true;
+  sound.SoundStop();
 }
 void StateNormal::update(float dt)
 {
@@ -18,46 +19,55 @@ void StateNormal::update(float dt)
 
   if (TouchButtons::getInstance().consume(3))
   {
-    dance = false;
-    // isDrawingBattery = !isDrawingBattery;
-    // timer = 0; // обнуляем чтобы обновилось сразу
+    timer = 0;
+    DRAWBAT = !DRAWBAT;
   }
   if (TouchButtons::getInstance().consume(2))
   {
-    // IsDrawVolume = true;
-    // timer = ApdateTimeConst;
-    // _volume = sound.GetVolume();
-    // if (_volume < 10)
-    //   _volume++;
-    // sound.SetVolume(_volume);
-    // display->NeedUpdate = true;
+    Clock = !Clock;
   }
   if (TouchButtons::getInstance().consume(1))
   {
-    // IsDrawVolume = true;
-    // timer = ApdateTimeConst;
-    // _volume = sound.GetVolume();
-    // if (_volume > 0)
-    //   _volume--;
-    // sound.SetVolume(_volume);
-    // display->NeedUpdate = true;
+    EventBus::push({EVENT_CHANGE_STATE, STATE_START});
   }
   if (TouchButtons::getInstance().consume(0))
   {
-    dance = true;
-    // EventBus::push({EVENT_CHANGE_STATE, STATE_CLOCK});
+    dance = !dance;
   }
 
+  if (BatteryModule::getInstance().getBatteryPercent() < 40)
+    DRAWBAT = true;
+
+  if (GlobalSensorsModule::getInstance().GetSoundSensor())
+    SafetyModule::getInstance().NewMov(MotionState::BACKWARD, 5, 5);
+
+  if (GlobalSensorsModule::getInstance().GetLightSensor())
+    Light = true;
+  else if (!GlobalSensorsModule::getInstance().GetLightSensor() && steep == 4)
+  {
+    Light = false;
+    steep = 0;
+  }
+
+  if (Light)
+    LightReaction(dt);
+
   IrLogic();
-  Draw(dt);
+
+  if (Clock)
+    DrawClock(dt);
+  else if (!DRAWBAT)
+    Draw(dt);
+  else if (DRAWBAT)
+    LOWBat();
 
   if (IsDrawVolume)
     DrawVolumeCount(dt);
 
   sound.Update(dt);
 
-  if (dance)
-    MovementModule::getInstance().MoveDance(dt);
+  // if (dance)
+  //   MovementModule::getInstance().MoveDance(dt);
 }
 
 void StateNormal::IrLogic()
@@ -128,5 +138,81 @@ void StateNormal::Draw(float dt)
       sprite.Draw(Emotions::NORMAL);
       return;
     }
+  }
+}
+void StateNormal::LOWBat()
+{
+  display->clear();
+  display->drawText("LOW BATTERY:", 0, 0, 1);
+  char buffer1[16];
+  int percent = BatteryModule::getInstance().getBatteryPercent();
+
+  BatteryModule::getInstance().drawBatteryIcon(*display, 0, 10, percent);
+
+  sprintf(buffer1, "Charge:%02d%s", percent, " %");
+  display->drawText(buffer1, 0, 40, 1);
+
+  float v = BatteryModule::getInstance().getVoltage();
+  int whole = v;
+  int fract = (v - whole) * 100;
+
+  sprintf(buffer1, "Voltage:%d.%02d V", whole, fract);
+  display->drawText(buffer1, 0, 50, 1);
+}
+void StateNormal::LightReaction(float dt)
+{
+  if (steep == 0)
+  {
+    SafetyModule::getInstance().NewMov(MotionState::TURN_LEFT, 0, 0);
+    timer1 = 100;
+    steep++;
+    return;
+  }
+  if (steep == 1)
+  {
+    timer1 -= dt;
+    if (timer1 < 0 && !SafetyModule::getInstance().isBusy())
+    {
+      SafetyModule::getInstance().NewMov(MotionState::TURN_RIGHT, 0, 0);
+      timer1 = 100;
+      steep++;
+      return;
+    }
+  }
+  if (steep == 2)
+  {
+    timer1 -= dt;
+    if (timer1 < 0 && !SafetyModule::getInstance().isBusy())
+    {
+      SafetyModule::getInstance().NewMov(MotionState::TURN_LEFT, 0, 0);
+      timer1 = 100;
+      steep++;
+      return;
+    }
+  }
+  if (steep == 3)
+  {
+    timer1 -= dt;
+    if (timer1 < 0 && !SafetyModule::getInstance().isBusy())
+    {
+      SafetyModule::getInstance().NewMov(MotionState::TURN_RIGHT, 0, 0);
+      timer1 = 100;
+      steep++;
+      return;
+    }
+  }
+}
+
+void StateNormal::DrawClock(float dt)
+{
+  timer -= dt;
+  if (timer < 0)
+  {
+    display->clear();
+    timer = ApdateTimeConst;
+    _time = RTCModule::getInstance().getTime();
+    char buffer[9]; // "HH:MM"
+    sprintf(buffer, "%02d:%02d", _time.hour(), _time.minute());
+    display->drawText(buffer, 0, 0, 4);
   }
 }
