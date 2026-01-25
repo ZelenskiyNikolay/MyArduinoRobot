@@ -1,4 +1,4 @@
-//"Release v1.1: restored functionality, calibration, safety correction, dance, IR control"
+//"Release v1.2: Added PowerModule"
 #include "Incledes.h"
 
 
