@@ -3,6 +3,16 @@
 #include "Core/State.h"
 #include "Display/DisplayOled.h"
 #include "Display/SpriteOled.h"
+#include "Sensors/IRSensor.h"
+#include "Move/SafetyModule.h"
+
+enum LookState
+{
+    Redy,
+   // Move,
+    Triger,
+    Distanse
+};
 
 class StateSearchBase : public State
 {
@@ -12,8 +22,20 @@ public:
     void enter() override;
     void update(float dt) override;
     void Draw(float dt);
+
 private:
+    void IrLogic();
+    void LookSouth(float dt);
+    LookState Look = Redy;
+
+    int maxDistance = 0;
+    int bestStep = 0;
+    int corner = 0;
+    int currentStep = 0;
+
+    bool lookSouth = false;
     float timer;
     DisplayOled *display;
     SpriteOled sprite;
+    IRSensor ir;
 };
