@@ -3,7 +3,6 @@
 
 enum ButtonIR
 {
-    NOOL,
     Button0,
     Button1,
     Button2,
@@ -13,7 +12,8 @@ enum ButtonIR
     Button6,
     Button7,
     Button8,
-    Button9
+    Button9,
+    NOOL,
 };
 
 class IRSensor

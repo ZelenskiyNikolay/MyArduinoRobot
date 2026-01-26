@@ -8,7 +8,8 @@ enum StateID {
     STATE_CALIBRATION = 1,
     STATE_NORMAL = 2,
     STATE_SLEEPY = 3,
-    STATE_CLOCK  = 4
+    STATE_CLOCK  = 4,
+    STATE_SEARCH_BASE = 5
 };
 
 // enum StateCommand {
