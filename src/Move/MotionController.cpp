@@ -194,3 +194,6 @@ void MotionController::SafatyStop()
     motor.stop();
     //command.type = IDLE;
 }
+void MotionController::Forward(){motor.forward();}
+void MotionController::LeftStop(){motor.stopLeft();}
+void MotionController::RightStop(){motor.stopRight();}

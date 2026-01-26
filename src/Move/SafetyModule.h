@@ -33,6 +33,8 @@ public:
     bool isBusy() const;
     void NewMov(MotionState Command, int Left = 0, int Right = 0);
 
+    bool EdgeAlignment();
+
     float GetDistance();
     void TriggerUltrasonic();
 

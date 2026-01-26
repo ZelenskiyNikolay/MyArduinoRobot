@@ -31,6 +31,30 @@ void SafetyModule::update()
         motion.update();
     }
 }
+bool SafetyModule::EdgeAlignment()
+{
+    bool Left = sensorLeft.GetSensorState();
+    bool Right = sensorRight.GetSensorState();
+
+    if (Left && Right)
+    {
+        motion.Forward();
+    }
+    if (!Left)
+    {
+        motion.LeftStop();
+    }
+    if (!Right)
+    {
+        motion.RightStop();
+    }
+    if (!Left && !Right)
+    {
+        motion.SafatyStop();
+        return true;
+    }
+    return false;
+}
 void SafetyModule::Corection()
 {
     switch (sensorTrigger)

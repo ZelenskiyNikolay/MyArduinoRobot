@@ -9,10 +9,19 @@ void StateSearchBase::enter()
     display->clear();
     display->NeedUpdate = true;
     timer = 0;
+    SafetyModule::getInstance().NewMov(MotionState::FORWARD, 5, 5);
 }
 void StateSearchBase::update(float dt)
 {
-    SafetyModule::getInstance().update();
+    if (!edgeAlign)
+        SafetyModule::getInstance().update();
+    else
+    {
+        if(SafetyModule::getInstance().EdgeAlignment())
+        {
+            edgeAlign = false;
+        }
+    }
     ir.update();
     if (TouchButtons::getInstance().consume(3))
     {
@@ -28,6 +37,8 @@ void StateSearchBase::update(float dt)
 
     if (lookSouth)
         LookSouth(dt);
+    if (RotateSouth)
+        RotateToSouth(dt);
 
     Draw(dt);
 }
@@ -39,7 +50,7 @@ void StateSearchBase::LookSouth(float dt)
         switch (Look)
         {
         case Redy:
-            if (currentStep > 11)
+            if (currentStep > 12)
             {
                 lookSouth = false;
                 break;
@@ -104,11 +115,15 @@ void StateSearchBase::IrLogic()
         break;
     case Button7:
     {
-        int angle = bestStep * ticks90Left / 3;
-        SafetyModule::getInstance().NewMov(MotionState::TURN_LEFT, angle, 0);
+        angle = bestStep * 30;
+        RotateSouth = true;
         break;
     }
-
+    case Button9:
+    {
+        edgeAlign = true;
+        break;
+    }
     case Button0:
         maxDistance = 0;
         bestStep = 0;
@@ -123,7 +138,55 @@ void StateSearchBase::IrLogic()
         break;
     }
 }
+void StateSearchBase::RotateToSouth(float dt)
+{
+    timer -= dt;
+    if (timer < 0 && !SafetyModule::getInstance().isBusy())
+    {
+        if (angle <= 0)
+        {
+            RotateSouth = false;
+            return;
+        }
+        if (angle >= 360)
+        {
+            RotateSouth = false;
+            return;
+        }
+        if (angle < 180)
+        {
+            if (angle > 90)
+            {
+                timer = 1000;
+                SafetyModule::getInstance().NewMov(MotionState::TURN_LEFT90);
+                angle -= 90;
+            }
+            else
+            {
+                timer = 1000;
+                SafetyModule::getInstance().NewMov(MotionState::TURN_LEFT, 6, 0);
+                angle -= 30;
+            }
+        }
+        else
+        {
+            int temp = 360 - angle;
+            if (temp > 90)
+            {
+                timer = 1000;
+                SafetyModule::getInstance().NewMov(MotionState::TURN_RIGHT90);
+                angle += 90;
+            }
 
+            else
+            {
+                timer = 1000;
+                SafetyModule::getInstance().NewMov(MotionState::TURN_RIGHT, 0, 6);
+                angle += 30;
+            }
+        }
+    }
+}
 void StateSearchBase::Draw(float dt)
 {
     timer -= dt;
@@ -132,12 +195,6 @@ void StateSearchBase::Draw(float dt)
         display->clear();
         display->drawText("LookSouth:", 0, 0, 1);
         char buffer[64];
-        // sprintf(buffer, "Left: %d", (int)SafetyModule::getInstance().GetTics(true));
-        // display->drawText(buffer, 0, 15, 1);
-        // sprintf(buffer, "Right: %d", (int)SafetyModule::getInstance().GetTics(false));
-        // display->drawText(buffer, 0, 25, 1);
-        // sprintf(buffer, "Dis: %d cm", (int)distance);
-        // display->drawText(buffer, 0, 35, 1);
 
         sprintf(buffer, "MaxDis: %d cm St:%d", maxDistance, currentStep);
         display->drawText(buffer, 0, 45, 1);

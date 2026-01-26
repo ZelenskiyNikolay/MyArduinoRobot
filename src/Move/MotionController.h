@@ -49,7 +49,9 @@ public:
     bool isBusy() const;
     void NewMov(MotionState Command,int Left=0,int Right=0);
     int Forward(int Left, int Right);
-    int ForwardSteeps();
+    void Forward();
+    void LeftStop();
+    void RightStop();
     void SafatyStop();
     
 

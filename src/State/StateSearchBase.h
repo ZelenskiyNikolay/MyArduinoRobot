@@ -28,6 +28,13 @@ private:
     void LookSouth(float dt);
     LookState Look = Redy;
 
+    void RotateToSouth(float dt);
+    bool RotateSouth = false;
+    bool turnLeft = false;
+    int angle = 0;
+
+    bool edgeAlign = false;
+
     int maxDistance = 0;
     int bestStep = 0;
     int corner = 0;
