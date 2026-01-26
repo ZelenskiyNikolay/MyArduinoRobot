@@ -96,6 +96,32 @@ void StateCalibration::ProcessCalibration(float dt)
     }
     if (steep_calibration == 2)
     {
+        timer1 = 1000;
+        steep_calibration++;
+        SafetyModule::getInstance().TriggerUltrasonic();
+        return;
+    }
+    if (steep_calibration == 3)
+    {
+        timer1 -= dt;
+        if (timer1 < 0)
+        {
+            if (distance < 250)
+            {
+                steep_calibration = 2;
+                return;
+            }
+            else
+            {
+                GlobalSettings::getInstance().Point.south = distance;
+                steep_calibration++;
+                timer1 = 500;
+                return;
+            }
+        }
+    }
+    if (steep_calibration == 4)
+    {
         timer1 -= dt;
         if (timer1 < 0 && !SafetyModule::getInstance().isBusy())
         {
@@ -105,40 +131,15 @@ void StateCalibration::ProcessCalibration(float dt)
             return;
         }
     }
-    if (steep_calibration == 3)
+    if (steep_calibration == 5)
     {
         timer1 -= dt;
         if (timer1 < 0 && !SafetyModule::getInstance().isBusy())
         {
             SafetyModule::getInstance().NewMov(MotionState::TURN_LEFT90);
             steep_calibration++;
+            timer1 = 500;
             return;
-        }
-    }
-    if (steep_calibration == 4)
-    {
-        timer1 = 1000;
-        steep_calibration++;
-        SafetyModule::getInstance().TriggerUltrasonic();
-        return;
-    }
-    if (steep_calibration == 5)
-    {
-        timer1 -= dt;
-        if (timer1 < 0)
-        {
-            if (distance < 40 || distance > 70)
-            {
-                steep_calibration = 4;
-                return;
-            }
-            else
-            {
-                GlobalSettings::getInstance().Distance_X = distance;
-                steep_calibration++;
-                timer1 = 500;
-                return;
-            }
         }
     }
     if (steep_calibration == 6)
@@ -146,47 +147,139 @@ void StateCalibration::ProcessCalibration(float dt)
         timer1 -= dt;
         if (timer1 < 0 && !SafetyModule::getInstance().isBusy())
         {
-            SafetyModule::getInstance().NewMov(MotionState::TURN_LEFT90);
+            timer1 = 1000;
             steep_calibration++;
+            SafetyModule::getInstance().TriggerUltrasonic();
             return;
         }
     }
-
     if (steep_calibration == 7)
     {
-        timer1 = 1000;
-        steep_calibration++;
-        SafetyModule::getInstance().TriggerUltrasonic();
-        return;
+        timer1 -= dt;
+        if (timer1 < 0)
+        {
+            if (distance < 40 || distance > 70)
+            {
+                steep_calibration = 6;
+                return;
+            }
+            else
+            {
+                GlobalSettings::getInstance().Point.east = distance;
+                steep_calibration++;
+                timer1 = 500;
+                return;
+            }
+        }
     }
-
     if (steep_calibration == 8)
+    {
+        timer1 -= dt;
+        if (timer1 < 0 && !SafetyModule::getInstance().isBusy())
+        {
+            SafetyModule::getInstance().NewMov(MotionState::TURN_LEFT90);
+            steep_calibration++;
+            timer1 = 500;
+            return;
+        }
+    }
+    if (steep_calibration == 9)
+    {
+        timer1 -= dt;
+        if (timer1 < 0 && !SafetyModule::getInstance().isBusy())
+        {
+            timer1 = 1000;
+            steep_calibration++;
+            SafetyModule::getInstance().TriggerUltrasonic();
+            return;
+        }
+    }
+    if (steep_calibration == 10)
     {
         timer1 -= dt;
         if (timer1 < 0)
         {
             if (distance < 25 || distance > 40)
             {
-                steep_calibration = 7;
+                steep_calibration = 9;
                 return;
             }
             else
             {
-                GlobalSettings::getInstance().Distance_Y = distance;
+                GlobalSettings::getInstance().Point.north = distance;
                 steep_calibration++;
                 timer1 = 1000;
                 return;
             }
         }
     }
-    if (steep_calibration == 9)
+    if (steep_calibration == 11)
+    {
+        timer1 -= dt;
+        if (timer1 < 0 && !SafetyModule::getInstance().isBusy())
+        {
+            SafetyModule::getInstance().NewMov(MotionState::TURN_LEFT90);
+            steep_calibration++;
+            timer1 = 500;
+            return;
+        }
+    }
+    
+    if (steep_calibration == 12)
+    {
+        timer1 -= dt;
+        if (timer1 < 0 && !SafetyModule::getInstance().isBusy())
+        {
+            timer1 = 1000;
+            steep_calibration++;
+            SafetyModule::getInstance().TriggerUltrasonic();
+            return;
+        }
+    }
+    if (steep_calibration == 13)
     {
         timer1 -= dt;
         if (timer1 < 0)
         {
-            EventBus::push({EVENT_CHANGE_STATE, STATE_NORMAL});
+            if (distance < 40 || distance > 70)
+            {
+                steep_calibration = 12;
+                return;
+            }
+            else
+            {
+                GlobalSettings::getInstance().Point.west = distance;
+                steep_calibration++;
+                timer1 = 1000;
+                return;
+            }
         }
     }
+    if (steep_calibration == 14)
+    {
+        char buffer[32];
+        sprintf(buffer, "X: %d cm Y: %d cm", GlobalSettings::getInstance().Point.south,
+            GlobalSettings::getInstance().Point.east);
+        Serial.println("Откалибровано:");
+        Serial.println(buffer);
+        sprintf(buffer, "-X: %d cm -Y: %d cm", GlobalSettings::getInstance().Point.north,
+                GlobalSettings::getInstance().Point.west);
+        Serial.println(buffer);
+    }
+    /*
+
+
+
+
+        if (steep_calibration == 9)
+        {
+            timer1 -= dt;
+            if (timer1 < 0)
+            {
+                EventBus::push({EVENT_CHANGE_STATE, STATE_NORMAL});
+            }
+        }
+            */
 }
 void StateCalibration::Draw(float dt)
 {
@@ -203,9 +296,12 @@ void StateCalibration::Draw(float dt)
         sprintf(buffer, "Dis: %d cm", (int)distance);
         display->drawText(buffer, 0, 35, 1);
 
-        sprintf(buffer, "X: %d cm Y: %d cm", GlobalSettings::getInstance().Distance_X,
-                GlobalSettings::getInstance().Distance_Y);
+        sprintf(buffer, "X: %d cm Y: %d cm", GlobalSettings::getInstance().Point.south,
+                GlobalSettings::getInstance().Point.east);
         display->drawText(buffer, 0, 45, 1);
+        sprintf(buffer, "-X: %d cm -Y: %d cm", GlobalSettings::getInstance().Point.north,
+                GlobalSettings::getInstance().Point.west);
+        display->drawText(buffer, 0, 55, 1);
 
         timer = 500;
     }
