@@ -224,7 +224,7 @@ void StateCalibration::ProcessCalibration(float dt)
             return;
         }
     }
-    
+
     if (steep_calibration == 12)
     {
         timer1 -= dt;
@@ -259,27 +259,22 @@ void StateCalibration::ProcessCalibration(float dt)
     {
         char buffer[32];
         sprintf(buffer, "X: %d cm Y: %d cm", GlobalSettings::getInstance().Point.south,
-            GlobalSettings::getInstance().Point.east);
+                GlobalSettings::getInstance().Point.east);
         Serial.println("Откалибровано:");
         Serial.println(buffer);
         sprintf(buffer, "-X: %d cm -Y: %d cm", GlobalSettings::getInstance().Point.north,
                 GlobalSettings::getInstance().Point.west);
         Serial.println(buffer);
+        steep_calibration++;
     }
-    /*
-
-
-
-
-        if (steep_calibration == 9)
+    if (steep_calibration == 15)
+    {
+        timer1 -= dt;
+        if (timer1 < 0)
         {
-            timer1 -= dt;
-            if (timer1 < 0)
-            {
-                EventBus::push({EVENT_CHANGE_STATE, STATE_NORMAL});
-            }
+            EventBus::push({EVENT_CHANGE_STATE, STATE_SEARCH_BASE});
         }
-            */
+    }
 }
 void StateCalibration::Draw(float dt)
 {

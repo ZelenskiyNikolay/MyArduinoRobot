@@ -10,6 +10,7 @@ void StateSearchBase::enter()
     display->NeedUpdate = true;
     timer = 0;
     SafetyModule::getInstance().NewMov(MotionState::FORWARD, 5, 5);
+    //GlobalSettings::getInstance().Point.east = 65;
 }
 void StateSearchBase::update(float dt)
 {
@@ -17,7 +18,7 @@ void StateSearchBase::update(float dt)
         SafetyModule::getInstance().update();
     else
     {
-        if(SafetyModule::getInstance().EdgeAlignment())
+        if (SafetyModule::getInstance().EdgeAlignment())
         {
             edgeAlign = false;
         }
@@ -39,8 +40,79 @@ void StateSearchBase::update(float dt)
         LookSouth(dt);
     if (RotateSouth)
         RotateToSouth(dt);
+    if (moveEast)
+        MoveToEastDiscrete(dt);
 
     Draw(dt);
+}
+void StateSearchBase::MoveToEastDiscrete(float dt)
+{
+    timer -= dt;
+    if (timer > 0 || SafetyModule::getInstance().isBusy())
+        return;
+
+    switch (MoveToEast)
+    {
+    case Redy:
+    {
+        Serial.print("MoveEast cur=");
+        Serial.print(cur);
+        Serial.print(" target=");
+        Serial.print(GlobalSettings::getInstance().Point.east);
+        Serial.print(" delta=");
+        Serial.println(cur - GlobalSettings::getInstance().Point.east);
+        if (cur <= 0)
+        {
+            MoveToEast = Triger;
+            return;
+        }
+        int delta = cur - GlobalSettings::getInstance().Point.east;
+        if (delta == 0)
+        {
+            SafetyModule::getInstance().StopMov();
+            moveEast = false;
+            return;
+        }
+        timer = 500;
+        if (abs(delta) > 5)
+        {
+            if (delta > 0)
+                SafetyModule::getInstance().NewMov(MotionState::FORWARD, 5, 5);
+            else
+                SafetyModule::getInstance().NewMov(MotionState::BACKWARD, 5, 5);
+        }
+        else if (abs(delta) > 0)
+        {
+            if (delta > 0)
+                SafetyModule::getInstance().NewMov(MotionState::FORWARD, 2, 2);
+            else
+                SafetyModule::getInstance().NewMov(MotionState::BACKWARD, 2, 2);
+        }
+        MoveToEast = Triger;
+        break;
+    }
+    case Triger:
+        SafetyModule::getInstance().TriggerUltrasonic();
+        MoveToEast = Distanse;
+        break;
+    case Distanse:
+        float temp = SafetyModule::getInstance().GetDistance();
+        if (temp > 0)
+        {
+            if (temp < 200)
+            {
+                cur = temp;
+                MoveToEast = Redy;
+            }
+            else
+            {
+                MoveToEast = Triger;
+            }
+        }
+        else
+            MoveToEast = Triger;
+        break;
+    }
 }
 void StateSearchBase::LookSouth(float dt)
 {
@@ -108,7 +180,9 @@ void StateSearchBase::IrLogic()
         SafetyModule::getInstance().NewMov(MotionState::TURN_RIGHT90);
         break;
     case Button5:
-        SafetyModule::getInstance().NewMov(MotionState::BACKWARD, 2, 2);
+        SafetyModule::getInstance().NewMov(MotionState::TURN_LEFT90);
+        moveEast = true;
+        timer = 1000;
         break;
     case Button8:
         SafetyModule::getInstance().NewMov(MotionState::BACKWARD, 20, 20);

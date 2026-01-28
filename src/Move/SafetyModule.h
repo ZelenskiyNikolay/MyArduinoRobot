@@ -32,7 +32,7 @@ public:
     void update();
     bool isBusy() const;
     void NewMov(MotionState Command, int Left = 0, int Right = 0);
-
+    void StopMov();
     bool EdgeAlignment();
 
     float GetDistance();

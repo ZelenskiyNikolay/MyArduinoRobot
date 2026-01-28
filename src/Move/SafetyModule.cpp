@@ -108,3 +108,4 @@ void SafetyModule::NewMov(MotionState Command, int Left, int Right)
     motion.NewMov(Command, Left, Right);
 }
 long SafetyModule::GetTics(bool left) { return motion.GetTics(left); }
+void SafetyModule::StopMov(){ motion.SafatyStop();}

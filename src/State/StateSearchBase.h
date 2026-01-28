@@ -5,11 +5,11 @@
 #include "Display/SpriteOled.h"
 #include "Sensors/IRSensor.h"
 #include "Move/SafetyModule.h"
+#include "Settings/GlobalSettings.h"
 
 enum LookState
 {
     Redy,
-   // Move,
     Triger,
     Distanse
 };
@@ -34,6 +34,11 @@ private:
     int angle = 0;
 
     bool edgeAlign = false;
+
+    void MoveToEastDiscrete(float dt);
+    LookState MoveToEast = Redy;
+    int cur=0;
+    bool moveEast = false;
 
     int maxDistance = 0;
     int bestStep = 0;
