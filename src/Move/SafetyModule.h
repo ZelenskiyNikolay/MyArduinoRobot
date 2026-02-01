@@ -7,8 +7,6 @@
 #include "MotionController.h"
 #include "SafetyModule.h"
 
-#define ticks90Left 18
-#define ticks90Right 20
 
 enum SafetyTriger
 {

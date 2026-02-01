@@ -35,8 +35,8 @@ public:
     void backwardRight();
     void backwardLeft();
 
-    int corrLeft = 0;
-    int corrRight = 3;
+    int corrLeft = 45;
+    int corrRight = 0;
 private:
     
 

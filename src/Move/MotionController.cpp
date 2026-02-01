@@ -77,7 +77,7 @@ int MotionController::update()
     long dl = GetTics() - command.startLeft;
     long dr = GetTics(false) - command.startRight;
 
-    switch (command.type)
+    switch(command.type)
     {
     case FORWARD:
         ForwardMov(dl, dr);
@@ -102,6 +102,8 @@ int MotionController::update()
         break;
     case TURN_RIGHT90:
         Turn90Right(dr);
+        break;
+    case IDLE:
         break;
     }
     return -1;

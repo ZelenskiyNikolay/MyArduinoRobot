@@ -25,7 +25,7 @@ void PowerModule::update(float dt)
         State = PowerState::POWER_EXTERNAL;
         if (isCharging)
             Charging = PowerCHARGING::CHARGING;
-        else if (isDone)
+        else if (!isCharging)
             Charging = PowerCHARGING::CHARGING_DONE;
     }
     else

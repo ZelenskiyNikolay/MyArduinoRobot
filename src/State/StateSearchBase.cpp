@@ -128,7 +128,7 @@ void StateSearchBase::LookSouth(float dt)
                 break;
             }
             timer = 1000;
-            SafetyModule::getInstance().NewMov(MotionState::TURN_LEFT, 6, 0);
+            SafetyModule::getInstance().NewMov(MotionState::TURN_LEFT,ticks90Left/3, 0);
             corner += 30;
             currentStep++;
             Look = Triger;
@@ -183,9 +183,10 @@ void StateSearchBase::IrLogic()
         SafetyModule::getInstance().NewMov(MotionState::TURN_LEFT90);
         moveEast = true;
         timer = 1000;
+        cur=0;
         break;
     case Button8:
-        SafetyModule::getInstance().NewMov(MotionState::BACKWARD, 20, 20);
+        SafetyModule::getInstance().NewMov(MotionState::BACKWARD, 3, 3);
         break;
     case Button7:
     {
@@ -238,7 +239,7 @@ void StateSearchBase::RotateToSouth(float dt)
             else
             {
                 timer = 1000;
-                SafetyModule::getInstance().NewMov(MotionState::TURN_LEFT, 6, 0);
+                SafetyModule::getInstance().NewMov(MotionState::TURN_LEFT, ticks90Left/3, 0);
                 angle -= 30;
             }
         }
@@ -255,7 +256,7 @@ void StateSearchBase::RotateToSouth(float dt)
             else
             {
                 timer = 1000;
-                SafetyModule::getInstance().NewMov(MotionState::TURN_RIGHT, 0, 6);
+                SafetyModule::getInstance().NewMov(MotionState::TURN_RIGHT, 0, ticks90Left/3);
                 angle += 30;
             }
         }

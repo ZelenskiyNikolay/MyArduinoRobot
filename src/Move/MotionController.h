@@ -2,8 +2,10 @@
 #include "MotorModule.h"
 #include "Sensors/RPM_sensor.h"
 
-#define ticks90Left 18
-#define ticks90Right 20
+// #define ticks90Left 18
+// #define ticks90Right 20
+#define ticks90Left 15
+#define ticks90Right 15
 
 enum MotionState {
     IDLE,

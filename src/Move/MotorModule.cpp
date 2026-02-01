@@ -28,12 +28,12 @@ void MotorModule::forward(int Left, int Right)
 }
 void MotorModule::forwardLeft()
 {
-    analogWrite(A1A, SPEED);
+    analogWrite(A1A, SPEED + corrLeft);
     analogWrite(A1B, 0);
 }
 void MotorModule::forwardRight()
 {
-    analogWrite(B1A, SPEED);
+    analogWrite(B1A, SPEED + corrRight);
     analogWrite(B1B, 0);
 }
 void MotorModule::backward()
@@ -64,17 +64,17 @@ void MotorModule::backward(int Left, int Right)
 void MotorModule::left()
 {
     digitalWrite(A1A, LOW);
-    analogWrite(A1B, SPEED + corrLeft);
-    analogWrite(B1A, SPEED + corrRight);
+    analogWrite(A1B, SPEED);
+    analogWrite(B1A, SPEED);
     digitalWrite(B1B, LOW);
 }
 
 void MotorModule::right()
 {
-    analogWrite(A1A, SPEED + corrLeft);
+    analogWrite(A1A, SPEED);
     digitalWrite(A1B, LOW);
     digitalWrite(B1A, LOW);
-    analogWrite(B1B, SPEED + corrRight);
+    analogWrite(B1B, SPEED);
 }
 
 void MotorModule::stop()
