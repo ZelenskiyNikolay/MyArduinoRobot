@@ -15,9 +15,8 @@ void PowerModule::update(float dt)
         return;
 
     timer = UPDATE_TIME;
-
-    isCharging = analogRead(PIN_CHRG) > 500; // ~2.4В+
-    isDone = analogRead(PIN_DONE) > 500;
+    isCharging = analogRead(PIN_CHRG)> 150; 
+    //isDone = analogRead(PIN_DONE) > 500; // ~2.4В+
     powerConect = digitalRead(PIN_5V);
 
     if (powerConect)
@@ -52,7 +51,7 @@ void PowerModule::DrawLog(float dt)
 
         if (isCharging)
             Serial.println("Charging...");
-        else if (isDone)
+        else if (!isCharging)
             Serial.println("Charge DONE");
     }
     else

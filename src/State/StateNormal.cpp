@@ -38,16 +38,16 @@ void StateNormal::update(float dt)
   if (BatteryModule::getInstance().getBatteryPercent() < 40)
     DRAWBAT = true;
 
-  if (GlobalSensorsModule::getInstance().GetSoundSensor())
-    SafetyModule::getInstance().NewMov(MotionState::BACKWARD, 5, 5);
+  // if (GlobalSensorsModule::getInstance().GetSoundSensor())
+  //   SafetyModule::getInstance().NewMov(MotionState::BACKWARD, 5, 5);
 
-  if (GlobalSensorsModule::getInstance().GetLightSensor())
-    Light = true;
-  else if (!GlobalSensorsModule::getInstance().GetLightSensor() && steep == 4)
-  {
-    Light = false;
-    steep = 0;
-  }
+  // if (GlobalSensorsModule::getInstance().GetLightSensor())
+  //   Light = true;
+  // else if (!GlobalSensorsModule::getInstance().GetLightSensor() && steep == 4)
+  // {
+  //   Light = false;
+  //   steep = 0;
+  // }
 
   if (Light)
     LightReaction(dt);

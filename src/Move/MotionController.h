@@ -41,10 +41,10 @@ private:
 
     void ForwardMov(long dl,long dr);
     void BackwardMov(long dl, long dr);
-    void Turn90Left(long dl);
-    void Turn90Right(long dr);
-    void TurnLeft(long dl, int ticks = 2);
-    void TurnRight(long dr, int ticks = 2);
+    void Turn90Left(long dl,long dr);
+    void Turn90Right(long dl,long dr);
+    void TurnLeft(long dl,long dr, int ticks = 2);
+    void TurnRight(long dl,long dr, int ticks = 2);
 public:
     MotionController();
     int update();
@@ -56,6 +56,5 @@ public:
     void RightStop();
     void SafatyStop();
     
-
     long GetTics(bool left = true);
 };

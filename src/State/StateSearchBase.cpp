@@ -55,12 +55,6 @@ void StateSearchBase::MoveToEastDiscrete(float dt)
     {
     case Redy:
     {
-        Serial.print("MoveEast cur=");
-        Serial.print(cur);
-        Serial.print(" target=");
-        Serial.print(GlobalSettings::getInstance().Point.east);
-        Serial.print(" delta=");
-        Serial.println(cur - GlobalSettings::getInstance().Point.east);
         if (cur <= 0)
         {
             MoveToEast = Triger;
@@ -122,7 +116,7 @@ void StateSearchBase::LookSouth(float dt)
         switch (Look)
         {
         case Redy:
-            if (currentStep > 12)
+            if (currentStep > 11)
             {
                 lookSouth = false;
                 break;

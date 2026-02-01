@@ -36,6 +36,7 @@ public:
     float GetDistance();
     void TriggerUltrasonic();
 
+
 private:
     SafetyModule();
     MotionController motion;

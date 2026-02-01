@@ -6,7 +6,7 @@
 #define B1A 6
 #define B1B 7
 #define SPEED 150
-#define MAX_CORR 30
+#define MAX_CORR 50
 
 class MotorModule
 {

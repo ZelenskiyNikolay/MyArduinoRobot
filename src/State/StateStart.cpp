@@ -24,6 +24,7 @@ void StateStart::update(float dt)
     BatteryModule &bat = BatteryModule::getInstance();
 
     if(bat.getBatteryPercent() < 99)
+    {
         if (power.State == POWER_EXTERNAL && power.Charging == CHARGING)
         {
             if (menu != BATARY_CHARGING)
@@ -43,14 +44,14 @@ void StateStart::update(float dt)
                 sound.RtDt(2);
             }
         }
-
+    }
     if (!num_menu)
     {
         if (TouchButtons::getInstance().consume(0))
         {
-            //EventBus::push({EVENT_CHANGE_STATE, STATE_SEARCH_BASE});
+            // EventBus::push({EVENT_CHANGE_STATE, STATE_SEARCH_BASE});
             EventBus::push({EVENT_CHANGE_STATE, STATE_CALIBRATION});
-            //EventBus::push({EVENT_CHANGE_STATE, STATE_NORMAL});
+            // EventBus::push({EVENT_CHANGE_STATE, STATE_NORMAL});
         }
 
         if (TouchButtons::getInstance().consume(2))
@@ -101,7 +102,7 @@ void StateStart::DrawLabel()
     display->clear();
 
     display->drawText("  ROBIK", 0, 0, 2);
-    display->drawText("              v1.2b", 0, 20, 1);
+    display->drawText("              v1.3d", 0, 20, 1);
     display->drawText("press 3 Battary %", 0, 45, 1);
     display->drawText("press 1 to start.", 0, 55, 1);
 }
@@ -159,5 +160,4 @@ void StateStart::DrawClock(float dt)
     Serial.println(_time.minute());
 
     display->drawText(buffer, 0, 0, 4);
-
 }
