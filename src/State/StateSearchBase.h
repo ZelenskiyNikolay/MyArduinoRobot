@@ -28,6 +28,14 @@ private:
     void LookSouth(float dt);
     LookState Look = Redy;
 
+    void SouthConfirm(float dt);
+    bool ToSouthConfirm = false;
+    int distance = 0;
+    LookState SC = Redy;
+    int itaration = 0;
+    int measurements[3];
+    bool Confirm = false;
+
     void RotateToSouth(float dt);
     bool RotateSouth = false;
     bool turnLeft = false;
@@ -37,7 +45,7 @@ private:
 
     void MoveToEastDiscrete(float dt);
     LookState MoveToEast = Redy;
-    int cur=0;
+    int cur = 0;
     bool moveEast = false;
 
     int maxDistance = 0;
