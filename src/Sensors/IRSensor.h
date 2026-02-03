@@ -3,6 +3,13 @@
 
 enum ButtonIR
 {
+    ButtonLeft,
+    ButtonRight,
+    ButtonUp,
+    ButtonDown,
+    ButtonOk,
+    ButtonStar,
+    ButtonHash,
     Button0,
     Button1,
     Button2,
