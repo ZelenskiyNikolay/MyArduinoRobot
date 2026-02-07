@@ -44,8 +44,206 @@ void StateSearchBase::update(float dt)
         MoveToEastDiscrete(dt);
     if (ToSouthConfirm)
         SouthConfirm(dt);
+    if (AutoSearch)
+        AutoSearchBase(dt);
 
     Draw(dt);
+}
+void StateSearchBase::AutoSearchBase(float dt)
+{
+    autoTimer -= dt;
+    if (autoTimer > 0 || SafetyModule::getInstance().isBusy())
+        return;
+    //Поиск юга
+    if (STEEP == READY && Steep == 0)
+    {
+        maxDistance = 0;
+        bestStep = 0;
+        corner = 0;
+        currentStep = 0;
+        timer = 1000;
+        lookSouth = true;
+        Look = Redy;
+        Steep++;
+        return;
+    }
+    if (STEEP == FINISHED && Steep == 1)
+    {
+        autoTimer = 2000;
+        Steep++;
+        return;
+    }
+    //Поворот на юг
+    if (STEEP == FINISHED && Steep == 2)
+    {
+        angle = bestStep * 30;
+        RotateSouth = true;
+        Steep++;
+        return;
+    }
+    if (STEEP == FINISHED && Steep == 3)
+    {
+        autoTimer = 2000;
+        Steep++;
+        return;
+    }
+    //Выравнивание обкрай
+    if (STEEP == FINISHED && Steep == 4)
+    {
+        autoTimer = 2000;
+        edgeAlign = true;
+        Steep++;
+        return;
+    }
+    if (STEEP == FINISHED && Steep == 5)
+    {
+        autoTimer = 2000;
+        Steep++;
+        return;
+    }
+    //Проверка ориентации на юг
+    if (STEEP == FINISHED && Steep == 6)
+    {
+        ToSouthConfirm = true;
+        Steep++;
+        return;
+    }
+    if (STEEP == FINISHED && Steep == 7)
+    {
+        autoTimer = 5000;
+        Steep++;
+        return;
+    }
+    //Смотрим результат проверки и идем дальше или повторяем поиск
+    if (STEEP == FINISHED && Steep == 8)
+    {
+        if (!Confirm)
+        {
+            AutoSearch = true;
+            Steep = 0;
+            STEEP = READY;
+            autoTimer = 100;
+            return;
+        }
+        else
+        {
+            autoTimer = 1000;
+            Steep++;
+            STEEP = FINISHED;
+            return;
+        }
+    }
+    //Выравниваем об край
+    if (STEEP == FINISHED && Steep == 9)
+    {
+        autoTimer = 2000;
+        edgeAlign = true;
+        Steep++;
+        return;
+    }
+    if (STEEP == FINISHED && Steep == 10)
+    {
+        autoTimer = 2000;
+        Steep++;
+        return;
+    }
+    // Поворот на восток и выравнивание по калиброванному значению
+    if (STEEP == FINISHED && Steep == 11)
+    {
+        autoTimer = 2000;
+        SafetyModule::getInstance().NewMov(MotionState::TURN_LEFT90);
+        moveEast = true;
+        timer = 1000;
+        cur = 0;
+        Steep++;
+        return;
+    }
+    if (STEEP == FINISHED && Steep == 12)
+    {
+        autoTimer = 1000;
+        Steep++;
+        return;
+    }
+    //поворот задом к базе мы прямо напротив базы
+    if (STEEP == FINISHED && Steep == 13)
+    {
+        SafetyModule::getInstance().NewMov(MotionState::TURN_RIGHT90);
+        Steep++;
+        return;
+    }
+    if (STEEP == FINISHED && Steep == 14)
+    {
+        autoTimer = 1000;
+        Steep++;
+        return;
+    }
+    //Пару раз выравниваемся об край
+    if (STEEP == FINISHED && Steep == 15)
+    {
+        autoTimer = 2000;
+        edgeAlign = true;
+        Steep++;
+        return;
+    }
+    if (STEEP == FINISHED && Steep == 16)
+    {
+        autoTimer = 2000;
+        Steep++;
+        return;
+    }
+    if (STEEP == FINISHED && Steep == 17)
+    {
+        autoTimer = 2000;
+        edgeAlign = true;
+        Steep++;
+        return;
+    }
+    if (STEEP == FINISHED && Steep == 18)
+    {
+        autoTimer = 2000;
+        Steep++;
+        return;
+    }
+    //Финальное движение назад
+    if (STEEP == FINISHED && Steep == 19)
+    {
+        autoTimer = 5000;
+        SafetyModule::getInstance().NewMov(MotionState::BACKWARD, 15, 15);
+        Steep++;
+        return;
+    }
+    if (STEEP == FINISHED && Steep == 20)
+    {
+        autoTimer = 2000;
+        Steep++;
+        return;
+    }
+    if (STEEP == FINISHED && Steep == 21)
+    {
+        autoTimer = 1000;
+        SafetyModule::getInstance().NewMov(MotionState::BACKWARD, 3, 3);
+        Steep++;
+        return;
+    }
+    if (STEEP == FINISHED && Steep == 22)
+    {
+        autoTimer = 2000;
+        Steep++;
+        return;
+    }
+    if (STEEP == FINISHED && Steep == 23)
+    {
+        if (PowerModule::getInstance().State == POWER_EXTERNAL)
+        {
+            Steep++;
+            return;
+        }
+        else
+        {
+            Steep = 21;
+            return;
+        }
+    }
 }
 void StateSearchBase::SouthConfirm(float dt)
 {
@@ -93,6 +291,7 @@ void StateSearchBase::SouthConfirm(float dt)
             SC = Redy;
             itaration = 0;
             memset(measurements, 0, sizeof(measurements));
+            STEEP = FINISHED;
         }
         break;
     }
@@ -191,6 +390,8 @@ void StateSearchBase::LookSouth(float dt)
             if (currentStep > 11)
             {
                 lookSouth = false;
+                STEEP = FINISHED;
+                timer = 1000;
                 break;
             }
             timer = 1000;
@@ -254,22 +455,20 @@ void StateSearchBase::IrLogic()
     case ButtonDown:
         SafetyModule::getInstance().NewMov(MotionState::BACKWARD, 3, 3);
         break;
+
     case Button8:
-    {
         angle = bestStep * 30;
         RotateSouth = true;
         break;
-    }
+
     case Button0:
-    {
         edgeAlign = true;
         break;
-    }
+
     case ButtonHash:
-    {
         ToSouthConfirm = true;
         break;
-    }
+
     case Button7:
         maxDistance = 0;
         bestStep = 0;
@@ -278,6 +477,13 @@ void StateSearchBase::IrLogic()
         timer = 1000;
         lookSouth = true;
         Look = Redy;
+        break;
+
+    case Button5:
+        AutoSearch = true;
+        Steep = 0;
+        STEEP = READY;
+        autoTimer = 100;
         break;
 
     default:
@@ -292,11 +498,14 @@ void StateSearchBase::RotateToSouth(float dt)
         if (angle <= 0)
         {
             RotateSouth = false;
+            STEEP = FINISHED;
             return;
         }
         if (angle >= 360)
         {
             RotateSouth = false;
+            STEEP = FINISHED;
+            timer = 500;
             return;
         }
         if (angle < 180)
@@ -335,8 +544,8 @@ void StateSearchBase::RotateToSouth(float dt)
 }
 void StateSearchBase::Draw(float dt)
 {
-    timer -= dt;
-    if (timer < 0)
+    drawTimer -= dt;
+    if (drawTimer < 0)
     {
         display->clear();
         display->drawText("LookSouth:", 0, 0, 1);
@@ -350,6 +559,6 @@ void StateSearchBase::Draw(float dt)
         sprintf(buffer, "BestSt: %d Corn: %d", bestStep, corner);
         display->drawText(buffer, 0, 55, 1);
 
-        timer = 500;
+        drawTimer = 500;
     }
 }

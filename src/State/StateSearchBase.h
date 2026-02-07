@@ -6,12 +6,19 @@
 #include "Sensors/IRSensor.h"
 #include "Move/SafetyModule.h"
 #include "Settings/GlobalSettings.h"
+#include "Module/PowerModule.h"
 
 enum LookState
 {
     Redy,
     Triger,
     Distanse
+};
+enum SteepState
+{
+    READY,
+    WORKS,
+    FINISHED
 };
 
 class StateSearchBase : public State
@@ -27,6 +34,11 @@ private:
     void IrLogic();
     void LookSouth(float dt);
     LookState Look = Redy;
+
+    void AutoSearchBase(float dt);
+    bool AutoSearch = false;
+    int Steep = 0;
+    SteepState STEEP = READY;
 
     void SouthConfirm(float dt);
     bool ToSouthConfirm = false;
@@ -55,6 +67,8 @@ private:
 
     bool lookSouth = false;
     float timer;
+    float autoTimer;
+    float drawTimer;
     DisplayOled *display;
     SpriteOled sprite;
     IRSensor ir;
