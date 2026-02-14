@@ -20,6 +20,7 @@ void StateSearchBase::update(float dt)
     {
         if (SafetyModule::getInstance().EdgeAlignment())
         {
+            STEEP = FINISHED;
             edgeAlign = false;
         }
     }
@@ -37,7 +38,7 @@ void StateSearchBase::update(float dt)
     IrLogic();
 
     if (lookSouth)
-        LookSouth(dt);
+        LookSouthNew(dt);
     if (RotateSouth)
         RotateToSouth(dt);
     if (moveEast)
@@ -54,7 +55,7 @@ void StateSearchBase::AutoSearchBase(float dt)
     autoTimer -= dt;
     if (autoTimer > 0 || SafetyModule::getInstance().isBusy())
         return;
-    //Поиск юга
+    // Поиск юга
     if (STEEP == READY && Steep == 0)
     {
         maxDistance = 0;
@@ -63,21 +64,18 @@ void StateSearchBase::AutoSearchBase(float dt)
         currentStep = 0;
         timer = 1000;
         lookSouth = true;
-        Look = Redy;
+        Look = Triger;
         Steep++;
         return;
     }
     if (STEEP == FINISHED && Steep == 1)
     {
-        autoTimer = 2000;
         Steep++;
         return;
     }
-    //Поворот на юг
+    // Поворот на юг
     if (STEEP == FINISHED && Steep == 2)
     {
-        angle = bestStep * 30;
-        RotateSouth = true;
         Steep++;
         return;
     }
@@ -87,9 +85,10 @@ void StateSearchBase::AutoSearchBase(float dt)
         Steep++;
         return;
     }
-    //Выравнивание обкрай
+    // Выравнивание обкрай
     if (STEEP == FINISHED && Steep == 4)
     {
+        STEEP = WORKS;
         autoTimer = 2000;
         edgeAlign = true;
         Steep++;
@@ -101,7 +100,7 @@ void StateSearchBase::AutoSearchBase(float dt)
         Steep++;
         return;
     }
-    //Проверка ориентации на юг
+    // Проверка ориентации на юг
     if (STEEP == FINISHED && Steep == 6)
     {
         ToSouthConfirm = true;
@@ -114,7 +113,7 @@ void StateSearchBase::AutoSearchBase(float dt)
         Steep++;
         return;
     }
-    //Смотрим результат проверки и идем дальше или повторяем поиск
+    // Смотрим результат проверки и идем дальше или повторяем поиск
     if (STEEP == FINISHED && Steep == 8)
     {
         if (!Confirm)
@@ -133,7 +132,7 @@ void StateSearchBase::AutoSearchBase(float dt)
             return;
         }
     }
-    //Выравниваем об край
+    // Выравниваем об край
     if (STEEP == FINISHED && Steep == 9)
     {
         autoTimer = 2000;
@@ -150,6 +149,7 @@ void StateSearchBase::AutoSearchBase(float dt)
     // Поворот на восток и выравнивание по калиброванному значению
     if (STEEP == FINISHED && Steep == 11)
     {
+        STEEP = WORKS;
         autoTimer = 2000;
         SafetyModule::getInstance().NewMov(MotionState::TURN_LEFT90);
         moveEast = true;
@@ -164,23 +164,26 @@ void StateSearchBase::AutoSearchBase(float dt)
         Steep++;
         return;
     }
-    //поворот задом к базе мы прямо напротив базы
+    // поворот задом к базе мы прямо напротив базы
     if (STEEP == FINISHED && Steep == 13)
     {
         SafetyModule::getInstance().NewMov(MotionState::TURN_RIGHT90);
+        autoTimer = 2000;
+        timer = 1000;
         Steep++;
         return;
     }
     if (STEEP == FINISHED && Steep == 14)
     {
-        autoTimer = 1000;
+        autoTimer = 5000;
         Steep++;
         return;
     }
-    //Пару раз выравниваемся об край
+    // Пару раз выравниваемся об край
     if (STEEP == FINISHED && Steep == 15)
     {
-        autoTimer = 2000;
+        STEEP = WORKS;
+        autoTimer = 1000;
         edgeAlign = true;
         Steep++;
         return;
@@ -193,7 +196,8 @@ void StateSearchBase::AutoSearchBase(float dt)
     }
     if (STEEP == FINISHED && Steep == 17)
     {
-        autoTimer = 2000;
+        STEEP = WORKS;
+        autoTimer = 1000;
         edgeAlign = true;
         Steep++;
         return;
@@ -204,30 +208,30 @@ void StateSearchBase::AutoSearchBase(float dt)
         Steep++;
         return;
     }
-    //Финальное движение назад
+    // Финальное движение назад
     if (STEEP == FINISHED && Steep == 19)
     {
         autoTimer = 5000;
-        SafetyModule::getInstance().NewMov(MotionState::BACKWARD, 15, 15);
+        SafetyModule::getInstance().NewMov(MotionState::BACKWARD, 20, 20);
         Steep++;
         return;
     }
     if (STEEP == FINISHED && Steep == 20)
     {
-        autoTimer = 2000;
+        autoTimer = 1000;
         Steep++;
         return;
     }
     if (STEEP == FINISHED && Steep == 21)
     {
-        autoTimer = 1000;
+        autoTimer = 500;
         SafetyModule::getInstance().NewMov(MotionState::BACKWARD, 3, 3);
         Steep++;
         return;
     }
     if (STEEP == FINISHED && Steep == 22)
     {
-        autoTimer = 2000;
+        autoTimer = 1000;
         Steep++;
         return;
     }
@@ -235,8 +239,9 @@ void StateSearchBase::AutoSearchBase(float dt)
     {
         if (PowerModule::getInstance().State == POWER_EXTERNAL)
         {
-            Steep++;
-            return;
+            // Steep++;
+            // return;
+            EventBus::push({EVENT_CHANGE_STATE, STATE_START});
         }
         else
         {
@@ -336,6 +341,7 @@ void StateSearchBase::MoveToEastDiscrete(float dt)
         {
             SafetyModule::getInstance().StopMov();
             moveEast = false;
+            STEEP = FINISHED;
             return;
         }
         timer = 500;
@@ -377,6 +383,62 @@ void StateSearchBase::MoveToEastDiscrete(float dt)
         else
             MoveToEast = Triger;
         break;
+    }
+}
+void StateSearchBase::LookSouthNew(float dt)
+{
+    timer -= dt;
+    if (timer < 0 && !SafetyModule::getInstance().isBusy())
+    {
+        switch (Look)
+        {
+        case Redy:
+            if (currentStep > 11)
+            {
+                lookSouth = false;
+                STEEP = FINISHED;
+                timer = 1000;
+                break;
+            }
+            timer = 1000;
+            SafetyModule::getInstance().NewMov(MotionState::TURN_LEFT, ticks90Left / 3, 0);
+            corner += 30;
+            currentStep++;
+            Look = Triger;
+            break;
+        case Triger:
+            SafetyModule::getInstance().TriggerUltrasonic();
+            Look = Distanse;
+            break;
+        case Distanse:
+            float temp = SafetyModule::getInstance().GetDistance();
+            if (temp > 0)
+            {
+                if (temp > maxDistance)
+                {
+                    maxDistance = temp;
+                    bestStep = currentStep;
+                    Look = Redy;
+                }
+                else
+                {
+                    Look = Redy;
+                }
+
+                if (temp > 250)
+                {
+                    lookSouth = false;
+                    STEEP = FINISHED;
+                    timer = 1000;
+                    return;
+                }
+                
+            }
+            else
+                Look = Triger;
+
+            break;
+        }
     }
 }
 void StateSearchBase::LookSouth(float dt)
@@ -476,7 +538,7 @@ void StateSearchBase::IrLogic()
         currentStep = 0;
         timer = 1000;
         lookSouth = true;
-        Look = Redy;
+        Look = Triger;
         break;
 
     case Button5:

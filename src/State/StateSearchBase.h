@@ -33,6 +33,7 @@ public:
 private:
     void IrLogic();
     void LookSouth(float dt);
+    void LookSouthNew(float dt);
     LookState Look = Redy;
 
     void AutoSearchBase(float dt);
